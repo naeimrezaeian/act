@@ -1,4 +1,4 @@
-# act
+# act RUDN
 
 ## Project setup
 ```
