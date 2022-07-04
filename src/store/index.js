@@ -8,7 +8,8 @@ export default new createStore({
     modules:{
         user,
         level,
-        questions
+        questions,
+       
         }
 
 })
