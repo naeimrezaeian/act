@@ -1,0 +1,70 @@
+<svg id="Сгруппировать_16" data-name="Сгруппировать 16" xmlns="http://www.w3.org/2000/svg" width="76" height="54.5" viewBox="0 0 76 54.5">
+    <ellipse id="Эллипс_1" data-name="Эллипс 1" cx="8.5" cy="8" rx="8.5" ry="8" transform="translate(43)" fill="#c2ccd9"/>
+    <ellipse id="Эллипс_2" data-name="Эллипс 2" cx="4" cy="3.5" rx="4" ry="3.5" transform="translate(8 30)" fill="#c2ccd9"/>
+    <circle id="Эллипс_3" data-name="Эллипс 3" cx="3" cy="3" r="3" transform="translate(70 23)" fill="#c2ccd9"/>
+    <circle id="Эллипс_4" data-name="Эллипс 4" cx="2" cy="2" r="2" transform="translate(0 24)" fill="#c2ccd9"/>
+    <g id="Сгруппировать_1" data-name="Сгруппировать 1" transform="translate(13.827 13.827)">
+        <path id="Контур_1" data-name="Контур 1" d="M74.314,92.5H64.438L59.5,97.438H79.252Z" transform="translate(-45.673 -56.946)" fill="#bdccde"/>
+        <line id="Линия_2" data-name="Линия 2" x2="24" transform="translate(11.173 40.173)" fill="none" stroke="#67809f" stroke-miterlimit="10" stroke-width="1"/>
+        <path id="Контур_2" data-name="Контур 2" d="M76.327,94.475,74.351,92.5H64.475L62.5,94.475Z" transform="translate(-45.711 -56.946)" fill="#9fb3ca"/>
+        <path id="Контур_3" data-name="Контур 3" d="M88.955,56.5H49.45a3.949,3.949,0,0,0-3.95,3.95V88.1h0a3.949,3.949,0,0,0,3.95,3.95h39.5a3.949,3.949,0,0,0,3.95-3.95h0V60.45A3.949,3.949,0,0,0,88.955,56.5Z" transform="translate(-45.5 -56.5)" fill="#67809f"/>
+        <path id="Контур_4" data-name="Контур 4" d="M88.955,56.5H49.45a3.949,3.949,0,0,0-3.95,3.95V88.1h0a3.949,3.949,0,0,0,3.95,3.95h39.5a3.949,3.949,0,0,0,3.95-3.95h0V60.45A3.949,3.949,0,0,0,88.955,56.5ZM48.463,60.45a.991.991,0,0,1,.988-.988h39.5a.991.991,0,0,1,.988.988v23.7a.991.991,0,0,1-.988.988H49.45a.991.991,0,0,1-.988-.988Z" transform="translate(-45.5 -56.5)" fill="#4d6077"/>
+        <line id="Линия_3" data-name="Линия 3" x2="7.842" transform="translate(19.812 31.604)" fill="none" stroke="#67809f" stroke-miterlimit="10" stroke-width="1"/>
+    </g>
+    <g id="Сгруппировать_12" data-name="Сгруппировать 12" transform="translate(21.611 5.926)">
+        <rect id="Прямоугольник_5" data-name="Прямоугольник 5" width="18" height="4" transform="translate(15.389 7.074)" fill="#3a4859"/>
+        <rect id="Прямоугольник_6" data-name="Прямоугольник 6" width="18" height="25" transform="translate(15.389 11.074)" fill="#4d6077"/>
+        <rect id="Прямоугольник_7" data-name="Прямоугольник 7" width="31" height="32" transform="translate(0.389 4.074)" fill="#fff"/>
+        <g id="Сгруппировать_11" data-name="Сгруппировать 11" transform="translate(6.783 11.214)">
+            <g id="Сгруппировать_4" data-name="Сгруппировать 4" transform="translate(7.375 16.394)">
+                <g id="Сгруппировать_2" data-name="Сгруппировать 2" transform="translate(0 0)">
+                    <line id="Линия_4" data-name="Линия 4" x2="5" transform="translate(0.231 0.466)" fill="none" stroke="#67809f" stroke-miterlimit="10" stroke-width="1"/>
+                    <line id="Линия_5" data-name="Линия 5" x2="5" transform="translate(6.231 0.466)" fill="none" stroke="#67809f" stroke-miterlimit="10" stroke-width="1"/>
+                </g>
+                <g id="Сгруппировать_3" data-name="Сгруппировать 3" transform="translate(0 2.236)">
+                    <line id="Линия_6" data-name="Линия 6" x1="3" transform="translate(0.231 0.231)" fill="none" stroke="#67809f" stroke-miterlimit="10" stroke-width="1"/>
+                </g>
+                <line id="Линия_7" data-name="Линия 7" x1="7" transform="translate(4.231 2.466)" fill="none" stroke="#67809f" stroke-miterlimit="10" stroke-width="1"/>
+            </g>
+            <g id="Сгруппировать_7" data-name="Сгруппировать 7" transform="translate(7.375 8.197)">
+                <g id="Сгруппировать_5" data-name="Сгруппировать 5" transform="translate(0 0)">
+                    <line id="Линия_8" data-name="Линия 8" x2="5" transform="translate(0.231 -0.337)" fill="none" stroke="#67809f" stroke-miterlimit="10" stroke-width="1"/>
+                    <line id="Линия_9" data-name="Линия 9" x2="5" transform="translate(6.231 -0.337)" fill="none" stroke="#67809f" stroke-miterlimit="10" stroke-width="1"/>
+                </g>
+                <g id="Сгруппировать_6" data-name="Сгруппировать 6" transform="translate(0 2.236)">
+                    <line id="Линия_10" data-name="Линия 10" x1="3" transform="translate(0.231 0.428)" fill="none" stroke="#67809f" stroke-miterlimit="10" stroke-width="1"/>
+                </g>
+                <line id="Линия_11" data-name="Линия 11" x1="7" transform="translate(4.231 2.663)" fill="none" stroke="#67809f" stroke-miterlimit="10" stroke-width="1"/>
+            </g>
+            <rect id="Прямоугольник_8" data-name="Прямоугольник 8" width="4" height="4" transform="translate(0.606 15.861)" fill="none" stroke="#67809f" stroke-miterlimit="10" stroke-width="1"/>
+            <g id="Сгруппировать_10" data-name="Сгруппировать 10" transform="translate(7.375 0.745)">
+                <g id="Сгруппировать_8" data-name="Сгруппировать 8" transform="translate(0 0)">
+                    <line id="Линия_12" data-name="Линия 12" x2="5" transform="translate(0.231 0.115)" fill="none" stroke="#67809f" stroke-miterlimit="10" stroke-width="1"/>
+                    <line id="Линия_13" data-name="Линия 13" x2="5" transform="translate(6.231 0.115)" fill="none" stroke="#67809f" stroke-miterlimit="10" stroke-width="1"/>
+                </g>
+                <g id="Сгруппировать_9" data-name="Сгруппировать 9" transform="translate(0 1.49)">
+                    <line id="Линия_14" data-name="Линия 14" x1="3" transform="translate(0.231 -0.375)" fill="none" stroke="#67809f" stroke-miterlimit="10" stroke-width="1"/>
+                </g>
+                <line id="Линия_15" data-name="Линия 15" x1="7" transform="translate(4.231 1.115)" fill="none" stroke="#67809f" stroke-miterlimit="10" stroke-width="1"/>
+            </g>
+            <rect id="Прямоугольник_9" data-name="Прямоугольник 9" width="4" height="4" transform="translate(0.606 -0.139)" fill="none" stroke="#67809f" stroke-miterlimit="10" stroke-width="1"/>
+            <path id="Контур_5" data-name="Контур 5" d="M64.694,68l-2.963,2.963L60.25,69.481" transform="translate(-60.25 -59.955)" fill="none" stroke="#f9690e" stroke-miterlimit="10" stroke-width="1"/>
+        </g>
+        <path id="Контур_6" data-name="Контур 6" d="M58.475,48.5,56.5,50.475H72.3L70.327,48.5Z" transform="translate(-53.42 -48.5)" fill="#fcb48e"/>
+        <rect id="Прямоугольник_10" data-name="Прямоугольник 10" width="31" height="2" transform="translate(0.389 2.074)" fill="#ff640e"/>
+        <path id="Контур_7" data-name="Контур 7" d="M55.475,48.5,53.5,50.475H69.3L67.327,48.5Z" transform="translate(-53.383 -48.5)" fill="#ff640e"/>
+    </g>
+    <g id="Сгруппировать_15" data-name="Сгруппировать 15" transform="translate(49.029 16.401)">
+        <g id="Сгруппировать_13" data-name="Сгруппировать 13" transform="translate(0.011 7.796)">
+            <path id="Контур_8" data-name="Контур 8" d="M90.438,69.34,85.5,73.2v5.017l4.938-3.862Z" transform="translate(-81.209 -67.029)" fill="#4d6077"/>
+            <path id="Контур_9" data-name="Контур 9" d="M82.888,75.245,81.94,77.24,81.2,78.791c-.119.247.01.4.277.346l1.679-.336,2.163-.435.128-.1V73.25Z" transform="translate(-81.155 -67.077)" fill="#c2ccd9"/>
+            <path id="Контур_10" data-name="Контур 10" d="M90.5,69.311v5.017l2.963-2.311V67Z" transform="translate(-81.271 -67)" fill="#3a4859"/>
+        </g>
+        <g id="Сгруппировать_14" data-name="Сгруппировать 14" transform="translate(0 0)">
+            <path id="Контур_11" data-name="Контур 11" d="M81.713,75.36l-.543,1.63c-.089.257.059.4.316.316l1.63-.543" transform="translate(-81.144 -59.308)" fill="#4d6077"/>
+            <rect id="Прямоугольник_11" data-name="Прямоугольник 11" width="19.752" height="3.95" transform="translate(1.268 13.967) rotate(-45)" fill="#fa8243"/>
+            <path id="Контур_12" data-name="Контур 12" d="M82.421,73.24l-.7,2.094,1.4,1.4,2.094-.7Z" transform="translate(-81.151 -59.282)" fill="#e1e6ec"/>
+            <rect id="Прямоугольник_12" data-name="Прямоугольник 12" width="19.752" height="1.975" transform="translate(2.662 15.357) rotate(-45)" fill="#ff640e"/>
+        </g>
+    </g>
+</svg>
