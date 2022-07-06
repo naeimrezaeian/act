@@ -73,8 +73,9 @@
                 </template>
             </ul>
             <div class="video" v-show="this.currentSubtestRecord">
-                <div class="res">ЗАПИСЬ</div>
-                  <Camera ref="camera"/>
+                <div class="res" v-show= "isWebcamera2">ЗАПИСЬ</div>
+                <div class="img" v-show="!isWebcamera2"><img src="@/assets/img/video.svg" alt=""></div>
+                  <Camera ref="camera" v-show= "isWebcamera2"/>
             </div>
         </div>
     </div>
@@ -94,13 +95,19 @@ var intervalTimer;
           Camera,
           
         },
+       
         computed:{
             ...mapGetters(['currentSubtestMaxTime','currentSubtestId','currentSubtestRecord',
-            'currentSubtestMaxScore',"allQuestions","getQuestion",
+            'currentSubtestMaxScore',"allQuestions","getQuestion",'isWebcamera',
             'getCurrentPointer']),
             isDisabled(){
               return this.isDisabledValue
+            },
+            isWebcamera2(){
+              //console.log(this.$refs)
+              return this.isWebcamera
             }
+            
            },  
            data(){
             return {
@@ -114,7 +121,8 @@ var intervalTimer;
                 timeLeft: '00:00',
                 endTime: '0',
                 isDisabledValue:false,
-                Limit:2
+                Limit:2,
+                
             }
            }  ,      
          methods:{
@@ -216,7 +224,9 @@ var intervalTimer;
     }
   ,send(){
    console.log("send...")
+ 
    //this.$refs.camera.download()
+   this.$refs.camera.stopRecord()
    this.isDisabledValue=true
   }
 
@@ -231,8 +241,11 @@ var intervalTimer;
            this.setTime(600)
           
           
+        },mounted(){
+         // this.Webcamera=this.$refs.camera.webcamera
+        // console.log(this.isWebcamera)
+           
         }
-
    }
 
    function zeroPadded(num) {

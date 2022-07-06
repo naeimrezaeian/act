@@ -1,11 +1,11 @@
 <template>
     <div>
-        <video ref="videoRec"  autoplay class="webcam"></video>
+        <video ref="videoRec"  autoplay class="webcam" ></video>
          </div>
 </template>
 
 <script>
-
+import {mapActions} from 'vuex'
     export default {
 
         name:'ACTCamera',
@@ -14,20 +14,21 @@
                 isRecording: false, 
                 recorder: null, 
                 stream: null,
-                recordedChunks :[]
+                recordedChunks :[],
+                isWebcamera:false,
             }
         },
          computed:{
           
             },
          methods:{
-           
+           ...mapActions(['set_isWebcamera']),
             init(){
                 if ('mediaDevices' in navigator && 'getUserMedia' in navigator.mediaDevices){
                     navigator.mediaDevices.getUserMedia({
                      video: {
-                        width: { ideal: 1920 },
-                        height: { ideal: 1080 }
+                        width: { ideal: 640 },
+                        height: { ideal: 480 }
                      },
                      audio: false
                     }).then(mediaStream=>{
@@ -43,9 +44,14 @@
                        
                        this.$refs.videoRec.src = null;
                        this.$refs.videoRec.srcObject = mediaStream;
+                       this.webcamera=true
+                       this.set_isWebcamera(true)
                         
                     })
-                    .catch(() => (console.log("Error media ")));
+                    .catch(() => (
+                        console.log("Error media ")
+                       
+                        ));
 
                             
                       
@@ -71,6 +77,12 @@
   a.click();
   
   setTimeout(function() { URL.revokeObjectURL(url); }, 100); 
+},
+stopRecord(){
+ this.recorder.stop();
+    this.isRecording = false;  
+    this.stream.getTracks().forEach(track => { track.stop(); });
+ this.set_isWebcamera(false)
 }
 
         },beforeMount(){
