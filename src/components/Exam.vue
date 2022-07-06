@@ -6,66 +6,19 @@
                 <div class="zag">Чтение</div>
                 <div class="sub-zag">Время выполнения: <b>{{this.currentSubtestMaxTime(this.currentSubtestId)}} минут</b>. Максимальное количество баллов: <b>{{this.currentSubtestMaxScore(this.currentSubtestId)}}. Пожалуйста, не пользуйтесь электронными устройствами.</b></div>
             </div>
-           
-            <template v-if="this.CurrentQuestionType==='text'">
-            <div class="title">{{CurrentTitle}}</div>
-            <div class="text">{{this.CurrentQuestion}}</div>
-            <div class="opros">
-                <div class="zag">Варианты ответа:</div>
-                    <button v-for="item in this.CurrentAnswers" :key="item.id" type="button" class="btns" @click="saveAnswer(item.id)">{{item.answer}}</button>
-                </div>
-            </template>
 
-         
+          
+            <questionText v-if="CurrentQuestionType==='text'" :CurrentTitle="this.CurrentTitle"  :CurrentQuestion="this.CurrentQuestion"  :CurrentAnswers="this.CurrentAnswers"/>
 
-
-          <template v-if="this.CurrentQuestionType==='audio'">
-          <div class="title">{{CurrentTitle}}</div>
-            <div class="audio-vopros">
-                <button type="button" :disabled='isDisabled' class="btn" @click="playAudio(this.getCurrentPointer)">ПРОСЛУШАТЬ ВОПРОС</button>
-                <span>Осталось прослушиваний: {{Limit}}</span>
-            </div>
-                <div class="text">{{this.CurrentQuestion}}</div>
-            <div class="opros">
-                <div class="zag">Варианты ответа:</div>
-                    <button v-for="item in this.CurrentAnswers" :key="item.id" type="button" class="btns" @click="saveAnswer(item.id)">{{item.answer}}</button>
-                </div>
-          </template>
-
-          <template v-if="this.CurrentQuestionType==='video'">
-              <div class="title">{{CurrentTitle}}</div>
-            <div class="box">
-                <div class="player">
-                  <div class="video">
-                      <video ref="videoPlayer"  style="width:100%;"></video>
-                  </div>
-                    
-                    <div class="panel">
-                        <div class="play" @click="videoplay(this.getCurrentPointer)"><img src="@/assets/img/play.svg" alt=""></div>
-                      </div>
-                
-                </div>
-                <div class="text" v-html="this.CurrentQuestion"></div>
-            </div>
-            <div class="box">
-                <div class="audio-text">Осталось прослушиваний: 2</div>
-                <a href="#" class="btn red">ОТПРАВИТЬ</a>
-            </div>
-          </template>
-<template v-if="this.CurrentQuestionType==='letter'">
-<div class="title">{{CurrentTitle}}</div>
-<div class="text-mini" v-html="this.CurrentQuestion"></div>
-<a href="#" class="pismo">Ответьте на вопрос письменно.</a>
-</template>
-
-
-
+            <questionLetter v-if="CurrentQuestionType==='letter'" :CurrentTitle="this.CurrentTitle"  :CurrentQuestion="this.CurrentQuestion"/>
+            <questionAudio v-if="CurrentQuestionType==='audio'" :CurrentTitle="this.CurrentTitle"  :CurrentQuestion="this.CurrentQuestion"  :CurrentAnswers="this.CurrentAnswers" />
+            
 
                  <a  class="btn red" v-show="this.LastQuestion" @click="send">ОТПРАВИТЬ</a>
         </div>
         <div class="right">
-            <div class="zag">Осталось времени</div>
-            <div class="time">{{timeLeft}}</div>
+          <timerComponent />
+         
             <ul>
             <template v-for="index in this.allQuestions.length " :key="index">
                 <li  v-if="index == this.getCurrentPointer+1" class="active" @click="pointerclick(index)">{{index}}</li>
@@ -85,14 +38,18 @@
 <script>
 import {mapGetters,mapActions} from 'vuex'
 import Camera from './Camera.vue'
-
-
-var intervalTimer;
-
+import timerComponent from './ExamElements/timerComponent.vue'
+import questionText from './ExamElements/questionText.vue'
+import questionLetter from './ExamElements/questionLetter.vue'
+import questionAudio from './ExamElements/questionAudio.vue'
    export default {
         name:'ACTexam',
         components:{
           Camera,
+          timerComponent,
+          questionText,
+          questionLetter,
+          questionAudio
           
         },
        
@@ -120,13 +77,14 @@ var intervalTimer;
                 selectedTime: 0,
                 timeLeft: '00:00',
                 endTime: '0',
+                timerFinish:false,
                 isDisabledValue:false,
                 Limit:2,
                 
             }
            }  ,      
          methods:{
-            ...mapActions(['subtestQuestions']) ,
+            ...mapActions(['subtestQuestions','setTime']) ,
             videoplay(id){
               console.log("video"+id)
               this.$refs.videoPlayer.src="uploads/"+this.allQuestions[id].file
@@ -154,11 +112,7 @@ var intervalTimer;
                 console.log("Limit !!!!!")
               }
             },
-            saveAnswer(id){
-                console.log(id+" "+this.allQuestions.length+" "+this.getCurrentPointer)
-                this.$store.commit('updatePointer',this.getCurrentPointer+1)
-                this.updateQuestion()
-            },
+            
             updateQuestion(){             
                 this.CurrentQuestion=this.getQuestion(this.getCurrentPointer).question 
                 this.CurrentQuestionType=this.getQuestion(this.getCurrentPointer).type
@@ -175,54 +129,7 @@ var intervalTimer;
               this.$store.commit('updatePointer',index-1)
               this.updateQuestion();
             },
-            setTime(seconds) {
-      clearInterval(intervalTimer);
-      this.timer(seconds);
-    },
-    timer(seconds) {
-      const now = Date.now();
-      const end = now + seconds * 1000;
-      this.displayTimeLeft(seconds);
-
-      this.selectedTime = seconds;
-      // this.initialTime = seconds;
-      this.displayEndTime(end);
-      this.countdown(end);
-    },
-    countdown(end) {
-      // this.initialTime = this.selectedTime;
-      intervalTimer = setInterval(() => {
-        const secondsLeft = Math.round((end - Date.now()) / 1000);
-
-        if(secondsLeft === 0) {
-          this.endTime = 0;
-        }
-
-        if(secondsLeft < 0) {
-          clearInterval(intervalTimer);
-          return;
-        }
-        this.displayTimeLeft(secondsLeft)
-      }, 1000);
-    },
-    displayTimeLeft(secondsLeft) {
-      const minutes = Math.floor((secondsLeft % 3600) / 60);
-      const seconds = secondsLeft % 60;
-
-      this.timeLeft = `${zeroPadded(minutes)}:${zeroPadded(seconds)}`;
-      if ( minutes === 0 && seconds ===0 ){
-      console.log("Time end")
-      this.send()
-      }
-      
-    },
-    displayEndTime(timestamp) {
-      const end = new Date(timestamp);
-      const hour = end.getHours();
-      const minutes = end.getMinutes();
-      this.endTime = `${hourConvert(hour)}:${zeroPadded(minutes)}`
-    }
-  ,send(){
+  send(){
    console.log("send...")
  
    //this.$refs.camera.download()
@@ -244,21 +151,27 @@ var intervalTimer;
         },mounted(){
          // this.Webcamera=this.$refs.camera.webcamera
         // console.log(this.isWebcamera)
+ this.$store.subscribe((mutation)=>{
+    switch(mutation.type){
+      case 'updateTimeleft':
+        this.timerFinish=this.$store.state.timer.timerFinish 
+        break
+      case 'updateSendAnswer':        
+        if(this.getCurrentPointer+1 < this.allQuestions.length){
+         this.$store.commit('updatePointer',this.getCurrentPointer+1)         
+        }
+        this.updateQuestion()
+        break
+
+    }
+
+
+  })
+
            
         }
    }
-
-   function zeroPadded(num) {
-  // 4 --> 04
-  return num < 10 ? `0${num}` : num;
-}
-
-function hourConvert(hour) {
-  // 15 --> 3
-  return (hour % 12) || 12;
-}
-
-</script>
+   </script>
 
 <style lang="scss" scoped>
 

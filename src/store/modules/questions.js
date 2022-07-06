@@ -10,6 +10,7 @@ export default {
         async subtestQuestions({commit},subtest){ 
         subtest      
         const response= await axios.get("questions")
+        
         if (response.data ){            
             commit('updateQuestions',response.data)            
         }
