@@ -11,7 +11,7 @@
             <questionText v-if="CurrentQuestionType==='text'" :CurrentTitle="this.CurrentTitle"  :CurrentQuestion="this.CurrentQuestion"  :CurrentAnswers="this.CurrentAnswers"/>
 
             <questionLetter v-if="CurrentQuestionType==='letter'" :CurrentTitle="this.CurrentTitle"  :CurrentQuestion="this.CurrentQuestion"/>
-            <questionAudio v-if="CurrentQuestionType==='audio'" :CurrentTitle="this.CurrentTitle"  :CurrentQuestion="this.CurrentQuestion"  :CurrentAnswers="this.CurrentAnswers" />
+            <questionAudio v-if="CurrentQuestionType==='audio'" :CurrentTitle="this.CurrentTitle"  :CurrentQuestion="this.CurrentQuestion"  :CurrentAnswers="this.CurrentAnswers" :CurrentAudioFile="this.CurrentAudioFile" :CurrentAudioLimit="this.CurrentAudioLimit"/>
             
 
                  <a  class="btn red" v-show="this.LastQuestion" @click="send">ОТПРАВИТЬ</a>
@@ -71,7 +71,8 @@ import questionAudio from './ExamElements/questionAudio.vue'
                 CurrentQuestion:'',
                 CurrentTitle:'',
                 CurrentQuestionType:'',
-                CurrentAnswers:[],               
+                CurrentAnswers:[],  
+                CureentAudioFile:'',             
                 CurrentPointer:0,
                 LastQuestion:false,
                 selectedTime: 0,
@@ -79,7 +80,7 @@ import questionAudio from './ExamElements/questionAudio.vue'
                 endTime: '0',
                 timerFinish:false,
                 isDisabledValue:false,
-                Limit:2,
+                CurrentAudioLimit:0,
                 
             }
            }  ,      
@@ -117,6 +118,8 @@ import questionAudio from './ExamElements/questionAudio.vue'
                 this.CurrentQuestion=this.getQuestion(this.getCurrentPointer).question 
                 this.CurrentQuestionType=this.getQuestion(this.getCurrentPointer).type
                 this.CurrentAnswers=this.getQuestion(this.getCurrentPointer).answers  
+                this.CurrentAudioFile=this.getQuestion(this.getCurrentPointer).file || ''
+                this.CurrentAudioLimit=this.getQuestion(this.getCurrentPointer).limit || 0
                 this.CurrentTitle=this.getQuestion(this.getCurrentPointer).desc
                 if (this.getCurrentPointer+1 === this.allQuestions.length && this.CurrentQuestionType!='video'){
                   this.LastQuestion=true
