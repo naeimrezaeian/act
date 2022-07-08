@@ -2,21 +2,20 @@
     <div class="title">{{CurrentTitle}}</div>
             <div class="audio-vopros">
                 <button type="button"  class="btn" v-bind:class="{btn_play:this.AudioBtn}" @click="playAudio()">
-                <p>ПРОСЛУШАТЬ ВОПРОС</p>
-                
+                <p>ПРОСЛУШАТЬ ВОПРОС</p>                
                 
                 </button>
                 <span>Осталось прослушиваний: {{CurrentAudioLimit}}</span>
             </div>
-                <div class="text">{{CurrentQuestion}} </div>
+                <div class="text">{{CurrentQuestion}} </div>                
             <div class="opros">
-                <div class="zag">Варианты ответа:</div>
-                    <button v-for="item in CurrentAnswers" :key="item.id" type="button" class="btns" @click="saveAnswer([getCurrentPointer,item.id])">{{item.answer}}</button>
+                <div class="zag">Варианты ответа:</div>             
+                    <button v-for="item in CurrentAnswers" v-bind:class=" this.SelectedAnswers[this.getCurrentPointer] == item.id ? 'answer_select':'' " :key="item.id" type="button" class="btns"  @click="sendAnswer([getCurrentPointer,item.id])">{{item.answer}}</button>
                 </div>
 </template>
 
 <script>
-import {mapGetters} from 'vuex'
+import {mapActions,mapGetters} from 'vuex'
 
 
     export default {
@@ -45,16 +44,23 @@ import {mapGetters} from 'vuex'
                 type:String,
                 require:true
             },
-                CurrentAudioLimit:{
+            CurrentAudioLimit:{
                     type:Number,
                     require:true
+            },
+            SelectedAnswers:{
+                type:Object,
+                require:true
             }
 
         },
         computed:{
-            ...mapGetters(['getCurrentPointer'])
-        },
+            ...mapGetters(['getCurrentPointer']),
+          
+        },        
+        
         methods:{
+            ...mapActions(['sendAnswer']),
             playAudio(){
                 console.log("play "+this.CurrentAudioFile)
                 this.AudioBtn=!this.AudioBtn
@@ -80,5 +86,9 @@ import {mapGetters} from 'vuex'
 .btn_play{
     background-color: rgb(224, 224, 224);
     cursor: default;
+}
+.answer_select{
+    color:yellow !important;
+
 }
 </style>

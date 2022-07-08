@@ -425,6 +425,7 @@ section{
     margin: 81px auto 0 auto;
     width: 63%;
     border-radius: 20px;
+   
 }
 .pages-time .box .right .video .res{
     font-size: 12px;
@@ -460,9 +461,10 @@ section{
 }
 .pages-time .box .left .box .player .video{
     width: 100%;
-    height: 435px;
+    max-height: 435px;
     background: #F8F8F8;
     border: 1px solid #C4C4C4;
+    margin-bottom: -6px;
 }
 .pages-time .box .left .box .player .panel{
     background: #254162;

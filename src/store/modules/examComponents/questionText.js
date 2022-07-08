@@ -2,7 +2,7 @@ import axios from "axios"
 
 export default {
     state:{
-        Answers:[],
+        selectedAnswers:[],
     },
     actions:{   
         async sendAnswer({commit},[questionIndex,questionId]){                
@@ -16,11 +16,14 @@ export default {
     mutations:{
         updateSendAnswer(state,data){
            
-            state.Answers.push(data.answers)
+            state.selectedAnswers.push(data.answers)
         }
       
     },
     getters:{
+        selectedAnswers(state){
+            return state.selectedAnswers
+        }
        
     }
 }

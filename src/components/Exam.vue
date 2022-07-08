@@ -8,13 +8,13 @@
             </div>
 
           
-            <questionText v-if="CurrentQuestionType==='text'" :CurrentTitle="this.CurrentTitle"  :CurrentQuestion="this.CurrentQuestion"  :CurrentAnswers="this.CurrentAnswers"/>
+            <questionText v-if="CurrentQuestionType ==='text'" :CurrentTitle="this.CurrentTitle"  :CurrentQuestion="this.CurrentQuestion"  :CurrentAnswers="this.CurrentAnswers"/>
 
-            <questionLetter v-if="CurrentQuestionType==='letter'" :CurrentTitle="this.CurrentTitle"  :CurrentQuestion="this.CurrentQuestion"/>
-            <questionAudio v-if="CurrentQuestionType==='audio'" :CurrentTitle="this.CurrentTitle"  :CurrentQuestion="this.CurrentQuestion"  :CurrentAnswers="this.CurrentAnswers" :CurrentAudioFile="this.CurrentAudioFile" :CurrentAudioLimit="this.CurrentAudioLimit"/>
+            <questionLetter v-if="CurrentQuestionType ==='letter'" :CurrentTitle="this.CurrentTitle"  :CurrentQuestion="this.CurrentQuestion"/>
+            <questionAudio v-if="CurrentQuestionType ==='audio'" :CurrentTitle="this.CurrentTitle"  :CurrentQuestion="this.CurrentQuestion"  :CurrentAnswers="this.CurrentAnswers" :CurrentAudioFile="this.CurrentAudioFile" :CurrentAudioLimit="this.CurrentAudioLimit" :SelectedAnswers="this.SelectedAnswers"/>
+            <questionVideo  v-if="CurrentQuestionType ==='video'"  :CurrentTitle="this.CurrentTitle" :CurrentQuestion="this.CurrentQuestion"  :CurrentAnswers="this.CurrentAnswers" :CurrentVideoFile="this.CurrentVideoFile" :CurrentVideoLimit="this.CurrentVideoLimit" :SelectedAnswers="this.SelectedAnswers"/>
             
-
-                 <a  class="btn red" v-show="this.LastQuestion" @click="send">ОТПРАВИТЬ</a>
+            <a class="btn red" v-show="this.LastQuestion" @click="send">ОТПРАВИТЬ</a>
         </div>
         <div class="right">
           <timerComponent />
@@ -42,6 +42,7 @@ import timerComponent from './ExamElements/timerComponent.vue'
 import questionText from './ExamElements/questionText.vue'
 import questionLetter from './ExamElements/questionLetter.vue'
 import questionAudio from './ExamElements/questionAudio.vue'
+import questionVideo from './ExamElements/questionVideo.vue'
    export default {
         name:'ACTexam',
         components:{
@@ -49,14 +50,15 @@ import questionAudio from './ExamElements/questionAudio.vue'
           timerComponent,
           questionText,
           questionLetter,
-          questionAudio
+          questionAudio,
+          questionVideo
           
         },
        
         computed:{
             ...mapGetters(['currentSubtestMaxTime','currentSubtestId','currentSubtestRecord',
             'currentSubtestMaxScore',"allQuestions","getQuestion",'isWebcamera',
-            'getCurrentPointer']),
+            'getCurrentPointer','selectedAnswers']),
             isDisabled(){
               return this.isDisabledValue
             },
@@ -72,63 +74,43 @@ import questionAudio from './ExamElements/questionAudio.vue'
                 CurrentTitle:'',
                 CurrentQuestionType:'',
                 CurrentAnswers:[],  
-                CureentAudioFile:'',             
+                CureentAudioFile:'', 
+                CurrentAudioLimit:0,
+                CurrentVideoFile:'', 
+                CurrentVideoLimit:0,           
                 CurrentPointer:0,
+                SelectedAnswers:[],
                 LastQuestion:false,
                 selectedTime: 0,
                 timeLeft: '00:00',
                 endTime: '0',
                 timerFinish:false,
                 isDisabledValue:false,
-                CurrentAudioLimit:0,
+               
                 
             }
            }  ,      
          methods:{
             ...mapActions(['subtestQuestions','setTime']) ,
-            videoplay(id){
-              console.log("video"+id)
-              this.$refs.videoPlayer.src="uploads/"+this.allQuestions[id].file
-              this.$refs.videoPlayer.width="100px"
-               this.$refs.videoPlayer.play();
-            },
-            playAudio(id){
-              if (this.Limit >0) {
-              console.log(id)
-              this.Limit=this.Limit-1
-               this.isDisabledValue=true
-              console.log(this.allQuestions)
-              var audio = new Audio("uploads/"+this.allQuestions[id].file)
-               let that = this
-              audio.ontimeupdate = function () { 
-                console.log( audio.currentTime.toFixed()+" "+audio.duration)
-                if (audio.currentTime === audio.duration ){                  
-                  that.isDisabledValue=false   
-                }
-               
-
-              }
-              audio.play()
-              }else{
-                console.log("Limit !!!!!")
-              }
-            },
-            
+                        
             updateQuestion(){             
                 this.CurrentQuestion=this.getQuestion(this.getCurrentPointer).question 
                 this.CurrentQuestionType=this.getQuestion(this.getCurrentPointer).type
                 this.CurrentAnswers=this.getQuestion(this.getCurrentPointer).answers  
                 this.CurrentAudioFile=this.getQuestion(this.getCurrentPointer).file || ''
                 this.CurrentAudioLimit=this.getQuestion(this.getCurrentPointer).limit || 0
+                this.CurrentVideoFile=this.getQuestion(this.getCurrentPointer).file || ''
+                this.CurrentVideoLimit=this.getQuestion(this.getCurrentPointer).limit || 0
                 this.CurrentTitle=this.getQuestion(this.getCurrentPointer).desc
-                if (this.getCurrentPointer+1 === this.allQuestions.length && this.CurrentQuestionType!='video'){
+                if (this.getCurrentPointer+1 === this.allQuestions.length ){
                   this.LastQuestion=true
                 }else{
                   this.LastQuestion=false
                 }
+                console.log( "refs: ",this.$refs)
+                
             },
-            pointerclick(index){
-               console.log("Index: "+index)
+            pointerclick(index){              
               this.$store.commit('updatePointer',index-1)
               this.updateQuestion();
             },
@@ -163,6 +145,8 @@ import questionAudio from './ExamElements/questionAudio.vue'
         if(this.getCurrentPointer+1 < this.allQuestions.length){
          this.$store.commit('updatePointer',this.getCurrentPointer+1)         
         }
+       
+        this.SelectedAnswers=this.selectedAnswers[0]      
         this.updateQuestion()
         break
 

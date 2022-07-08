@@ -3,7 +3,7 @@
     <div class="text">{{CurrentQuestion}}</div>
     <div class="opros">
         <div class="zag">Варианты ответа:</div>
-            <button v-for="item in CurrentAnswers" :key="item.id" type="button" class="btns" @click="sendAnswer([getCurrentPointer,item.id])">{{item.answer}}</button>
+            <button  v-for="item in CurrentAnswers" :key="item.id" type="button" class="btns" @click="sendAnswer([getCurrentPointer,item.id])">{{item.answer}}</button>
         </div>
  
 </template>
