@@ -58,7 +58,7 @@ import questionVideo from './ExamElements/questionVideo.vue'
         computed:{
             ...mapGetters(['currentSubtestMaxTime','currentSubtestId','currentSubtestRecord',
             'currentSubtestMaxScore',"allQuestions","getQuestion",'isWebcamera',
-            'getCurrentPointer','selectedAnswers']),
+            'getCurrentPointer','selectedAnswers','currentStateData']),
             isDisabled(){
               return this.isDisabledValue
             },
@@ -102,12 +102,13 @@ import questionVideo from './ExamElements/questionVideo.vue'
                 this.CurrentVideoFile=this.getQuestion(this.getCurrentPointer).file || ''
                 this.CurrentVideoLimit=this.getQuestion(this.getCurrentPointer).limit || 0
                 this.CurrentTitle=this.getQuestion(this.getCurrentPointer).desc
+                
                 if (this.getCurrentPointer+1 === this.allQuestions.length ){
                   this.LastQuestion=true
                 }else{
                   this.LastQuestion=false
                 }
-                console.log( "refs: ",this.$refs)
+                //console.log( "refs: ",this.$refs)
                 
             },
             pointerclick(index){              
@@ -119,16 +120,19 @@ import questionVideo from './ExamElements/questionVideo.vue'
  
    this.$refs.camera.download()
    //this.$refs.camera.stopRecord()
-   this.isDisabledValue=true
+   //this.isDisabledValue=true
   }
 
             
         },
 
        async created(){
-        
+      
+       this.$store.commit('updatePointer',this.currentStateData.questionId)
+console.log( this.$store.state.questions.currentPointer)
       // console.log("call:"+this.getRecorder)
-        await this.subtestQuestions(1)           
+        await this.subtestQuestions(1)   
+          
            this.updateQuestion();
            this.setTime(60)
           

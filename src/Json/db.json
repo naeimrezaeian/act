@@ -42,7 +42,7 @@
       ]
       ,
       "currentState":{
-        "moduleId":1,"subtestId":1001,"questionId":1,"start":"12:00:00","record":true
+        "moduleId":null,"subtestId":null,"questionId":2,"start":null,"record":true
       }
       
     }}

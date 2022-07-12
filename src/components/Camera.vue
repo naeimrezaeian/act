@@ -6,6 +6,7 @@
 
 <script>
 import {mapActions} from 'vuex'
+import axios from "axios"
     export default {
 
         name:'ACTCamera',
@@ -32,9 +33,10 @@ import {mapActions} from 'vuex'
                      },
                      audio: false
                     }).then(mediaStream=>{
+                        
                       this.stream=mediaStream;
                         this.recorder = new MediaRecorder(mediaStream, {
-                          mimeType: "video/webm",
+                          mimeType: "video/webm; codecs=vp9",
                             audioBitsPerSecond: 128000
                         });
                       
@@ -62,21 +64,30 @@ import {mapActions} from 'vuex'
             },
      
     
-     download() {
-  this.recorder.stop();
-    this.isRecording = false;
-  this.stream.getTracks().forEach(track => { track.stop(); });
+     async download() {
+this.recorder.stop();
+this.isRecording = false;
+  this.stream.getTracks().forEach(track => {console.log(track); track.stop(); });
 
-  var blob = new Blob(this.recordedChunks, {type: "video/webm"});
-  var url =  URL.createObjectURL(blob);
-  var a = document.createElement("a");
-  document.body.appendChild(a);
-  a.style = "display: none";
-  a.href = url;
-  a.download = 'test.webm';
-  a.click();
+var blob = new Blob(this.recordedChunks, {type: "video/webm"});
+
+const headers = {  'Content-Type': 'multipart/form-data'}
+const file = new File ([blob],"test"+new Date().getTime()+".webm",{type:blob.type,lastModified:new Date().getTime()})
+
+let formData=new FormData();
+formData.append('file',file)
+
+   const response= await axios.post("upload",formData,{headers:headers})
+   console.log(response.data)
+ // var url =  URL.createObjectURL(blob);
+  //var a = document.createElement("a");
+  //document.body.appendChild(a);
+  //a.style = "display: none";
+  //a.href = url;
+  //a.download = 'test.webm';
+  //a.click();
   
-  setTimeout(function() { URL.revokeObjectURL(url); }, 100); 
+ // setTimeout(function() { URL.revokeObjectURL(url); }, 100); 
 },
 stopRecord(){
  this.recorder.stop();
@@ -90,6 +101,10 @@ stopRecord(){
            this.init();         
         },created(){
           
+        },watch:{
+            stream:function(){
+               // console.log(this.stream)
+            }
         }
         
         

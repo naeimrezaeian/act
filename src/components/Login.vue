@@ -49,16 +49,27 @@ import {mapGetters} from 'vuex'
             }
         },
         computed:{
-            ...mapGetters(['loadingValue','errorValue'])
+            ...mapGetters(['loadingValue','errorValue','currentStateData'])
         } 
         ,        
         methods :{
        
         handelSubmit(){           
             this.$store.dispatch("loginUser",this.currentUser)
-            this.currentUser.password=this.currentUser.login=""
+            this.currentUser.password=this.currentUser.login=""           
             if (localStorage.getItem("token")){
-                this.$router.push("/level");
+                console.log(this.currentStateData.moduleId)
+                if (this.currentStateData.start===null){
+                    if (this.currentStateData.moduleId===null){
+                             this.$router.push("/level");
+                    }else{
+                            this.$router.push("/module");
+                    }
+                }else{
+                    this.$router.push("/exam")
+                
+                }
+               
             }
                    
         }

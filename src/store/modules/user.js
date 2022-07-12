@@ -16,7 +16,9 @@ export default {
              axios.get('login', {login : user.login, password :user.password} ).then((response) =>{  
            
                 if (response.data && response.data.message === "success"){ 
+                    
                     localStorage.removeItem("token")
+                    localStorage.removeItem("exam")
                     localStorage.setItem('token',response.data.token);
                     localStorage.setItem("exam",JSON.stringify(response.data.exam))
                     sessionStorage.setItem('isAuth', 'true');
@@ -80,6 +82,9 @@ export default {
          currentSubtestRecord(){
            return JSON.parse(localStorage.getItem("exam")).currentState.record
             //return true
+         },
+         currentStateData(){
+            return JSON.parse(localStorage.getItem("exam")).currentState
          },
         moduleList(){
             return JSON.parse(localStorage.getItem("exam")).module

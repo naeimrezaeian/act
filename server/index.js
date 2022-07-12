@@ -1,11 +1,13 @@
 const express = require('express')
+const fs = require("fs");
+const fileUpload = require('express-fileupload');
 //const Routers = require ('./Routers');
 var cors = require('cors')
 
 const app = express()
-app.use(express.json());
-app.use(express.urlencoded({ extended: true }));
-
+//app.use(express.json());
+//app.use(express.urlencoded({ extended: true }));
+app.use(fileUpload());
 app.use(cors())
 
 
@@ -72,7 +74,7 @@ const login ={
   ]
   ,
   "currentState":{
-    "moduleId":1,"subtestId":1001,"questionId":1,"start":"12:00:00","record":true
+    "moduleId":1,"subtestId":1001,"questionId":0,"start":"12:00:00","record":true
   }
   
 }}
@@ -220,14 +222,23 @@ app.get("/subtests/:id",(req,res)=>{
 
   
  
+  app.post('/upload',(req,res)=>{
+    
+    
+  var fileName=req.files.file.name
+  var fileBuffer=req.files.file.data
+    //console.log(req.file)
+    
+    //fs.appendFile(fileName, fileBuffer, function (err) {
+   //   if (err) throw err;
+    //  console.log('Saved!');
+    //});
+   //
    
+   fs.createWriteStream("./public/uploads/"+fileName).write(fileBuffer);
+   // res.status(201).json({"status":req.body})
 
-
-
-
-
-
-
+  })
 
 
 

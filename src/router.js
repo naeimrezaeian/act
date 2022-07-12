@@ -53,9 +53,9 @@ const routes = [
   {
     path: "/naeim2",
     name: "NaeimTest2",
-    beforeEnter: checkLogin,
+    //beforeEnter: checkLogin,
     
-    meta: { requiresVisitor: false }  ,
+    //meta: { requiresVisitor: false }  ,
     component: ACTnaeim2,
   },
   
