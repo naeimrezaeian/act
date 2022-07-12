@@ -1,29 +1,25 @@
 <template>
     <div>
+        <h1>Test Page</h1>
 
-        <Camera v-on:takePicture="this.takePicture"/>
-
-
+<p>isAuth: {{this.isAuth}}</p>
     </div>
 </template>
 
 <script>
-import Camera from './Camera.vue'
-
     export default {
-        components:{
-            Camera
-        },
-        methods:{
-            takePicture(){
-                console.log("take")
-               // let ratio= (window.innerHeight > window.innerWidth) ? 16/9 : 9/16;
-                //const picture = document.querySelector("canvas");
-               // let photo = document.querySelector("video ")
+        data(){
+            return {
               
-
+                isAuth:'www'
             }
+        },
+        mounted(){
+           
+            this.isAuth=sessionStorage.getItem('isAuth');
         }
+        
+
         
     }
 </script>

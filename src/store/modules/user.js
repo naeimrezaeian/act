@@ -19,6 +19,7 @@ export default {
                     localStorage.removeItem("token")
                     localStorage.setItem('token',response.data.token);
                     localStorage.setItem("exam",JSON.stringify(response.data.exam))
+                    sessionStorage.setItem('isAuth', 'true');
                     const error=''
                     const loading = false;
                     commit('updateLogin',{error:error,loading:loading})

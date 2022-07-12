@@ -117,8 +117,8 @@ import questionVideo from './ExamElements/questionVideo.vue'
   send(){
    console.log("send...")
  
-   //this.$refs.camera.download()
-   this.$refs.camera.stopRecord()
+   this.$refs.camera.download()
+   //this.$refs.camera.stopRecord()
    this.isDisabledValue=true
   }
 
@@ -130,7 +130,7 @@ import questionVideo from './ExamElements/questionVideo.vue'
       // console.log("call:"+this.getRecorder)
         await this.subtestQuestions(1)           
            this.updateQuestion();
-           this.setTime(600)
+           this.setTime(60)
           
           
         },mounted(){
