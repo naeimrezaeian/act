@@ -1,48 +1,89 @@
 <template>
-  <div class="container">
-    <div class="large-12 medium-12 small-12 cell">
-      <h1>Vue JS Axios - Image Upload using PHP API - ItSolutionStuff.com</h1>
-      <label>File
-        <input type="file" id="file" ref="file" v-on:change="onChangeFileUpload()"/>
-      </label>
-        <button v-on:click="submitForm()">Upload</button>
-    </div>
-  </div>
+<div>
+  <video ref="videoRec"  autoplay class="webcam" ></video>
+</div>
 </template>
   
 <script>
 import axios from "axios"
   export default {
     data(){
-      return {
-        file: ''
-      }
-    },
-  
-    methods: {
-      submitForm(){
-       
-            let formData = new FormData();
-            formData.append('file', this.file);
-  
-            axios.post('http://localhost:4000/upload',
-                formData,
-                {
-                headers: {
-                    'Content-Type': 'multipart/form-data'
+            return {
+               
+                recorder: null, 
+                stream: null,
+                recordedChunks :[],
+               
+            }
+        },
+    methods:{
+ init(){
+                
+                if ('mediaDevices' in navigator && 'getUserMedia' in navigator.mediaDevices){
+                    navigator.mediaDevices.getUserMedia({
+                     video: {
+                        width: { ideal: 640 },
+                        height: { ideal: 480 }
+                     },
+                     audio: false
+                    }).then(  mediaStream=>{
+                        
+                      this.stream=mediaStream;
+                        this.recorder = new MediaRecorder(mediaStream, {
+                          mimeType: "video/webm; codecs=vp9",
+                            audioBitsPerSecond: 128000
+                        });
+                      
+                       this.recorder.ondataavailable =  (event) => { 
+                        
+                       // const r=event.data.text()
+                      //var blob = new Blob(event.data, { 'type' : 'video/webm; codecs=vp9' });
+                      const file = new File ([event.data],"test"+new Date().getTime()+".webm",{type:'video/webm; codecs=vp9',lastModified:new Date().getTime()})
+
+                      const formData = new FormData();
+                      formData.append("file", file);
+                          const headers = {  'Content-Type': 'multipart/form-data'}
+                           axios.post("upload",formData,{headers:headers}).then(res=>{
+                            console.log(res.data)
+                           })
+                        
+                        
+                        
+                        
+                        this.recordedChunks.push(event.data); 
+                        };
+                        this.recorder.start(6000);
+                        
+                       
+                       this.$refs.videoRec.src = null;
+                       this.$refs.videoRec.srcObject = mediaStream;
+                      
+                        
+                    })
+                    .catch(() => (
+                        console.log("Error media ")
+                       
+                        ));
+
+                            
+                      
                 }
-              }
-            ).then(function(data){
-              console.log(data.data);
-            })
-            .catch(function(){
-              console.log('FAILURE!!');
-            });
-      },
-  
-      onChangeFileUpload(){
-        this.file = this.$refs.file.files[0];
-      }
+
+
     }
+},beforeMount(){
+           
+           this.init();         
+        }
+                
   }
 </script>
+
+<style scoped>
+.webcam{
+  width: 320px;
+  height: 240px;
+  background-color: red;
+}
+
+</style>

@@ -1,0 +1,8 @@
+<video id="videoPlayer" width="400px" controls muted="muted" autoplay>
+            <source src="http://localhost:4000/video" type="video/mp4" />
+        </video>
+    
+
+    video{
+  width: 100%;
+}
