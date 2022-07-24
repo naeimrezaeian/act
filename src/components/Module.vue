@@ -40,9 +40,9 @@ import {mapGetters} from 'vuex'
            
         } ,
        async created(){
-        if(!this.currentSubtestId) {
+        // if(!this.currentSubtestId) {
             
-        }
+        // }
         const response = await axios.get("api/subtests/"+this.currentSubtestId)        
         this.title=response.data.result.title;
         this.desc=response.data.result.desc;
