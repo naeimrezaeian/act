@@ -7,15 +7,15 @@ export default {
         loading: false
      },
     actions:{
-         loginUser({commit},user){
-            const error=''
-            const loading = true;
-            commit('updateLogin',{error:error,loading:loading})
+        async  loginUser({commit},user){
+          
+          
 
-      
-             axios.get('login', {login : user.login, password :user.password} ).then((response) =>{  
-           
+           console.log("login user: "+user)
+           await  axios.get('login', {login : user.login, password :user.password} ).then((response) =>{  
+          
                 if (response.data && response.data.message === "success"){ 
+                   
                     
                     localStorage.removeItem("token")
                     localStorage.removeItem("exam")
@@ -26,7 +26,8 @@ export default {
                     const loading = false;
                     commit('updateLogin',{error:error,loading:loading})
                     
-                }else{                   
+                }else{    
+                                
                     const error='Логин или пароль введены неверно'
                     const loading = false;
                     commit('updateLogin',{error:error,loading:loading})
@@ -45,6 +46,7 @@ export default {
     },
     mutations:{
         updateLogin(state,data) { 
+            
             state.error=data.error
             state.loading=data.loading            
         }
