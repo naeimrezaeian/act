@@ -51,8 +51,8 @@ const login ={
       "id": 1,
       "title": "Русский язык",
       "subtest":[
-        {"id":1001,"title":"Лексика и грамматика","status":1,"maxtime":20,"maxscore":50},
-        {"id":1002,"title":"Чтение","status":0,"maxtime":20,"maxscore":50},
+        {"id":1001,"title":"Лексика и грамматика","status":2,"maxtime":20,"maxscore":50},
+        {"id":1002,"title":"Чтение","status":1,"maxtime":20,"maxscore":50},
         {"id":1003,"title":"Письмо","status":0,"maxtime":20,"maxscore":50},
         {"id":1004,"title":"Говорение","status":0,"maxtime":20,"maxscore":50}
       ]
@@ -74,7 +74,7 @@ const login ={
   ]
   ,
   "currentState":{
-    "moduleId":1,"subtestId":1001,"questionId":0,"start":"12:00:00","record":true
+    "moduleId":1,"subtestId":1001,"questionId":null,"start":null,"record":true
   }
   
 }}

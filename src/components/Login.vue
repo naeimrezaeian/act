@@ -33,7 +33,7 @@
 
 <script>
 
-import {mapGetters} from 'vuex'
+import {mapGetters,mapActions} from 'vuex'
 
     export default {        
         name : 'ACTlogin' ,
@@ -53,12 +53,13 @@ import {mapGetters} from 'vuex'
         } 
         ,        
         methods :{
-       
-        handelSubmit(){           
-            this.$store.dispatch("loginUser",this.currentUser)
-            this.currentUser.password=this.currentUser.login=""           
-            if (localStorage.getItem("token")){
-                console.log(this.currentStateData.moduleId)
+        ...mapActions(['loginUser']) ,
+        async handelSubmit(){    
+            
+         this.loginUser(this.currentUser).then(async () =>{
+           
+                if (localStorage.getItem("token")){
+              
                 if (this.currentStateData.start===null){
                     if (this.currentStateData.moduleId===null){
                              this.$router.push("/level");
@@ -66,11 +67,24 @@ import {mapGetters} from 'vuex'
                             this.$router.push("/module");
                     }
                 }else{
+                  
                     this.$router.push("/exam")
                 
                 }
                
             }
+
+         })
+            
+           
+    
+          // await this.$store.dispatch("loginUser",this.currentUser)
+
+
+  
+           // this.currentUser.password=this.currentUser.login   
+           
+        
                    
         }
 
