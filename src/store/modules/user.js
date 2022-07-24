@@ -1,98 +1,92 @@
 import axios from 'axios'
 
 export default {
-    state:{       
-        user:{},
-        error:'',
+    state: {
+        user: {},
+        error: '',
         loading: false
-     },
-    actions:{
-        async  loginUser({commit},user){
-          
-          
+    },
+    actions: {
+        async loginUser({ commit }, user) {
+            try {
+                var response = await axios.get('login', { login: user.login, password: user.password })
 
-           console.log("login user: "+user)
-           await  axios.get('login', {login : user.login, password :user.password} ).then((response) =>{  
-          
-                if (response.data && response.data.message === "success"){ 
-                   
-                    
+                if (response.data && response.data.message === "success") {
                     localStorage.removeItem("token")
                     localStorage.removeItem("exam")
-                    localStorage.setItem('token',response.data.token);
-                    localStorage.setItem("exam",JSON.stringify(response.data.exam))
+                    localStorage.setItem('token', response.data.token);
+                    localStorage.setItem("exam", JSON.stringify(response.data.exam))
                     sessionStorage.setItem('isAuth', 'true');
-                    const error=''
+                    const error = ''
                     const loading = false;
-                    commit('updateLogin',{error:error,loading:loading})
-                    
-                }else{    
-                                
-                    const error='Логин или пароль введены неверно'
-                    const loading = false;
-                    commit('updateLogin',{error:error,loading:loading})
-                } 
+                    commit('updateLogin', { error: error, loading: loading })
 
-            }).catch(() =>{
-                
-                const error='Ошибка соединения к серверу'
+                } else {
+
+                    const error = 'Логин или пароль введены неверно'
+                    const loading = false;
+                    commit('updateLogin', { error: error, loading: loading })
+                }
+            }
+            catch (ex) {
+                const error = 'Ошибка соединения к серверу'
                 const loading = false;
-                commit('updateLogin',{error:error,loading:loading})
-            })
-       
-            
-           
+                commit('updateLogin', { error: error, loading: loading })
+            }
+
+
+
         }
     },
-    mutations:{
-        updateLogin(state,data) { 
-            
-            state.error=data.error
-            state.loading=data.loading            
+    mutations: {
+        updateLogin(state, data) {
+
+            state.error = data.error
+            state.loading = data.loading
         }
     },
-    
-    getters:{
-        loadingValue(state){
+
+    getters: {
+        loadingValue(state) {
             return state.loading
         },
-        errorValue(state){
+        errorValue(state) {
             return state.error
         },
-        currentLevelId(){
-           
+        currentLevelId() {
+
             return JSON.parse(localStorage.getItem("exam")).levelid
         },
-        currentSubtestId(){
-            
-             return JSON.parse(localStorage.getItem("exam")).currentState.subtestId
-         },
-         currentSubtestMaxTime: () => (id) => {
+        currentSubtestId() {
+
+            return JSON.parse(localStorage.getItem("exam")).currentState.subtestId
+        },
+        currentSubtestMaxTime: () => (id) => {
             return JSON.parse(localStorage.getItem("exam")).module.map(
-                function(e){
-                    return e.subtest.filter(i =>i.id===id)
+                function (e) {
+                    return e.subtest.filter(i => i.id === id)
                 }
             )[0][0].maxtime
-         },
-         currentSubtestMaxScore: () => (id) => {
+        },
+        currentSubtestMaxScore: () => (id) => {
             return JSON.parse(localStorage.getItem("exam")).module.map(
-                function(e){
-                    return e.subtest.filter(i =>i.id===id)
+                function (e) {
+                    return e.subtest.filter(i => i.id === id)
                 }
             )[0][0].maxscore
-         },
-         currentSubtestRecord(){
-           return JSON.parse(localStorage.getItem("exam")).currentState.record
+        },
+        currentSubtestRecord() {
+            return JSON.parse(localStorage.getItem("exam")).currentState.record
             //return true
-         },
-         currentStateData(){
+        },
+        currentStateData() {
             return JSON.parse(localStorage.getItem("exam")).currentState
-         },
-        moduleList(){
+        },
+        moduleList() {
             return JSON.parse(localStorage.getItem("exam")).module
         }
 
 
-       
+
     }
 }
