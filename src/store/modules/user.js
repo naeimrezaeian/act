@@ -13,14 +13,14 @@ export default {
             commit('updateLogin',{error:error,loading:loading})
 
       
-             axios.get('login', {login : user.login, password :user.password} ).then((response) =>{  
+             axios.post('api/user/login', {username : user.login, password :user.password} ).then((response) =>{  
            
-                if (response.data && response.data.message === "success"){ 
+                if (response.data && response.data.success === true){ 
                     
                     localStorage.removeItem("token")
                     localStorage.removeItem("exam")
-                    localStorage.setItem('token',response.data.token);
-                    localStorage.setItem("exam",JSON.stringify(response.data.exam))
+                    localStorage.setItem('token',response.data.result.token);
+                    localStorage.setItem("exam",JSON.stringify(response.data.result.exam))
                     sessionStorage.setItem('isAuth', 'true');
                     const error=''
                     const loading = false;
@@ -59,25 +59,25 @@ export default {
         },
         currentLevelId(){
            
-            return JSON.parse(localStorage.getItem("exam")).levelid
+            return JSON.parse(localStorage.getItem("exam")).levelId
         },
         currentSubtestId(){
             
              return JSON.parse(localStorage.getItem("exam")).currentState.subtestId
          },
          currentSubtestMaxTime: () => (id) => {
-            return JSON.parse(localStorage.getItem("exam")).module.map(
+            return JSON.parse(localStorage.getItem("exam")).modules.map(
                 function(e){
-                    return e.subtest.filter(i =>i.id===id)
+                    return e.subtests.filter(i =>i.id===id)
                 }
-            )[0][0].maxtime
+            )[0][0].maxTime
          },
          currentSubtestMaxScore: () => (id) => {
-            return JSON.parse(localStorage.getItem("exam")).module.map(
+            return JSON.parse(localStorage.getItem("exam")).modules.map(
                 function(e){
-                    return e.subtest.filter(i =>i.id===id)
+                    return e.subtests.filter(i =>i.id===id)
                 }
-            )[0][0].maxscore
+            )[0][0].maxScore
          },
          currentSubtestRecord(){
            return JSON.parse(localStorage.getItem("exam")).currentState.record
@@ -87,7 +87,7 @@ export default {
             return JSON.parse(localStorage.getItem("exam")).currentState
          },
         moduleList(){
-            return JSON.parse(localStorage.getItem("exam")).module
+            return JSON.parse(localStorage.getItem("exam")).modules
         }
 
 

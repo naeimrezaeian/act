@@ -41,7 +41,7 @@ import {mapGetters} from 'vuex'
         } ,
        async created(){
           
-        const response = await axios.get("subtests/"+this.currentSubtestId)        
+        const response = await axios.get("api/subtests/"+this.currentSubtestId)        
         this.title=response.data.title;
         this.desc=response.data.desc;
           

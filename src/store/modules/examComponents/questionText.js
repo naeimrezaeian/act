@@ -5,8 +5,8 @@ export default {
         selectedAnswers:[],
     },
     actions:{   
-        async sendAnswer({commit},[questionIndex,questionId]){                
-            const response= await axios.post("examAnswer/",{questionIndex:questionIndex,questionId:questionId}
+        async sendAnswer({commit},[questionId,answerId]){                
+            const response= await axios.post("api/questions/examAnswer/",{questionId:questionId,answerId:answerId}
             )
             //console.log(response.data.answers)
             commit("updateSendAnswer",response.data)

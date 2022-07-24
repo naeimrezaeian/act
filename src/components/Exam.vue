@@ -8,7 +8,7 @@
             </div>
 
           
-            <questionText v-if="CurrentQuestionType ==='text'" :CurrentTitle="this.CurrentTitle"  :CurrentQuestion="this.CurrentQuestion"  :CurrentAnswers="this.CurrentAnswers"/>
+            <questionText v-if="CurrentQuestionType ==='text'" :CurrentQuestionId="this.CurrentQuestionId" :CurrentTitle="this.CurrentTitle"  :CurrentQuestion="this.CurrentQuestion"  :CurrentAnswers="this.CurrentAnswers"/>
 
             <questionLetter v-if="CurrentQuestionType ==='letter'" :CurrentTitle="this.CurrentTitle"  :CurrentQuestion="this.CurrentQuestion"/>
             <questionAudio v-if="CurrentQuestionType ==='audio'" :CurrentTitle="this.CurrentTitle"  :CurrentQuestion="this.CurrentQuestion"  :CurrentAnswers="this.CurrentAnswers" :CurrentAudioFile="this.CurrentAudioFile" :CurrentAudioLimit="this.CurrentAudioLimit" :SelectedAnswers="this.SelectedAnswers"/>
@@ -70,6 +70,7 @@ import questionVideo from './ExamElements/questionVideo.vue'
            },  
            data(){
             return {
+                CurrentQuestionId:'',
                 CurrentQuestion:'',
                 CurrentTitle:'',
                 CurrentQuestionType:'',
@@ -93,7 +94,8 @@ import questionVideo from './ExamElements/questionVideo.vue'
          methods:{
             ...mapActions(['subtestQuestions','setTime']) ,
                         
-            updateQuestion(){             
+            updateQuestion(){          
+                this.CurrentQuestionId=this.getQuestion(this.getCurrentPointer).id
                 this.CurrentQuestion=this.getQuestion(this.getCurrentPointer).question 
                 this.CurrentQuestionType=this.getQuestion(this.getCurrentPointer).type
                 this.CurrentAnswers=this.getQuestion(this.getCurrentPointer).answers  
@@ -129,9 +131,9 @@ import questionVideo from './ExamElements/questionVideo.vue'
        async created(){
       
        this.$store.commit('updatePointer',this.currentStateData.questionId)
-console.log( this.$store.state.questions.currentPointer)
+console.log( this.$store.state.questions)
       // console.log("call:"+this.getRecorder)
-        await this.subtestQuestions(1)   
+        await this.subtestQuestions('3ff008c9-88ff-4df0-be69-56d8803cf16a')   
           
            this.updateQuestion();
            this.setTime(60)
