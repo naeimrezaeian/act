@@ -9,10 +9,11 @@ export default {
     actions:{
         async subtestQuestions({commit},subtest){ 
         subtest      
-        const response= await axios.get("questions")
+        const response= await axios.get('api/questions/'+subtest)
         
-        if (response.data ){            
-            commit('updateQuestions',response.data)            
+        if (response.data && response.data.success === true){          
+            commit('updateQuestions',response.data.result)
+            commit('updatePointer',0)            
         }
 
         }
@@ -31,7 +32,6 @@ export default {
             return state.questionsList
         },
         getQuestion: (state) => (pointer) => {
-       
             return state.questionsList[pointer]
         },
         getCurrentPointer(state){

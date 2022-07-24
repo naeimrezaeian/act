@@ -8,9 +8,9 @@ export default {
     actions:{
 
         async levelInformation({commit},levelData){           
-        const response= await axios.get("levels/"+levelData)
-        if (response.data ){
-            commit('updateLevel',response.data)
+        const response= await axios.get("api/levels/"+levelData)
+        if (response.data && response.data.success===true){
+            commit('updateLevel',response.data.result)
         }
         }
     },
