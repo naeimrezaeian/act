@@ -6,8 +6,8 @@
             <div class="zag" ><span>{{module.title}}</span></div>
             
             <ul>
-                  <li v-for="item in module.subtest" :key="item.id">
-                  <strong class="subtest-current" v-if="item.status==1">{{item.title}}</strong>
+                  <li v-for="item in module.subtests" :key="item.id">
+                  <strong class="subtest-current" v-if="item.status=='active'">{{item.title}}</strong>
                   <span  v-else-if="item.status==0">{{item.title}}</span>
                   <span  class="subtest-passed" v-else-if="item.status==2">{{item.title}}</span>
                  
@@ -40,10 +40,12 @@ import {mapGetters} from 'vuex'
            
         } ,
        async created(){
-          
+        if(!this.currentSubtestId) {
+            
+        }
         const response = await axios.get("api/subtests/"+this.currentSubtestId)        
-        this.title=response.data.title;
-        this.desc=response.data.desc;
+        this.title=response.data.result.title;
+        this.desc=response.data.result.desc;
           
                  
         },methods:{
