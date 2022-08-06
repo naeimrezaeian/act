@@ -28,6 +28,7 @@ import {mapGetters,mapActions} from 'vuex'
         },methods:{
              ...mapActions(['levelInformation']),
         start(){
+            
             this.$router.push("/module");
         }
         }

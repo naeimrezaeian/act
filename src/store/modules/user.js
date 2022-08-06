@@ -4,30 +4,19 @@ export default {
     state: {
         user: {},
         error: '',
-        loading: false
+        loading: false,
+        currentModule: {}
     },
     actions: {
         async loginUser({ commit }, user) {
             try {
-                var response = await axios.get('login', { login: user.login, password: user.password })
+                var response = await axios.post('api/user/login', { username: user.login, password: user.password })
+                if (response.data && response.data.success === true) {
 
-<<<<<<< HEAD
-      
-             axios.post('api/user/login', {username : user.login, password :user.password} ).then((response) =>{  
-           
-                if (response.data && response.data.success === true){ 
-                    
                     localStorage.removeItem("token")
                     localStorage.removeItem("exam")
-                    localStorage.setItem('token',response.data.result.token);
-                    localStorage.setItem("exam",JSON.stringify(response.data.result.exam))
-=======
-                if (response.data && response.data.message === "success") {
-                    localStorage.removeItem("token")
-                    localStorage.removeItem("exam")
-                    localStorage.setItem('token', response.data.token);
-                    localStorage.setItem("exam", JSON.stringify(response.data.exam))
->>>>>>> main
+                    localStorage.setItem('token', response.data.result.token);
+                    localStorage.setItem("exam", JSON.stringify(response.data.result.exam))
                     sessionStorage.setItem('isAuth', 'true');
                     const error = ''
                     const loading = false;
@@ -48,13 +37,50 @@ export default {
 
 
 
+        },
+        async startSubtest(_, data) {
+            try {
+                await axios.post('api/UserSubtests/StartSubtest/' + data)
+
+            } catch (error) {
+                console.log(error)
+            }
+        },
+        setCurrentSubtest({ commit }, data) {
+            const exam = JSON.parse(localStorage.getItem("exam"))
+            localStorage.removeItem('exam')
+            exam.currentState.moduleId = data.moduleId
+            exam.currentState.subtestId = data.subtestId
+            localStorage.setItem("exam", JSON.stringify(exam))
+            console.log({method:'setCurrentSubstest', data})
+            commit("updateCurrentSubtest", data)
+        },
+        async getCurrentState({commit}) {
+            try {
+                const response = await axios.get('api/UserExamCurrentState')
+                if (response.data) {
+                    const exam = JSON.parse(localStorage.getItem("exam"))
+                    localStorage.removeItem('exam')
+                    exam.currentState=response.data.result
+                    localStorage.setItem("exam", JSON.stringify(exam))
+                    console.log({method:'getCurrentState', data: response.data})
+                    commit("updateCurrentSubtest", {moduleId:exam.currentState.moduleId,subtestId:exam.currentState.subtestId})
+                }
+            } catch (error) {
+                console.log(error)
+            }
+
+
         }
     },
     mutations: {
         updateLogin(state, data) {
-
             state.error = data.error
             state.loading = data.loading
+        },
+        updateCurrentSubtest(state, data) {
+            state.currentModule = data
+            console.log({method:'updateCurrentSubtest', data: state.currentModule})
         }
     },
 
@@ -65,70 +91,36 @@ export default {
         errorValue(state) {
             return state.error
         },
-<<<<<<< HEAD
-        currentLevelId(){
-           
-            return JSON.parse(localStorage.getItem("exam")).levelId
-        },
-        currentSubtestId(){
-            
-             return JSON.parse(localStorage.getItem("exam")).currentState.subtestId
-         },
-         currentSubtestMaxTime: () => (id) => {
-            return JSON.parse(localStorage.getItem("exam")).modules.map(
-                function(e){
-                    return e.subtests.filter(i =>i.id===id)
-                }
-            )[0][0].maxTime
-         },
-         currentSubtestMaxScore: () => (id) => {
-            return JSON.parse(localStorage.getItem("exam")).modules.map(
-                function(e){
-                    return e.subtests.filter(i =>i.id===id)
-                }
-            )[0][0].maxScore
-         },
-         currentSubtestRecord(){
-           return JSON.parse(localStorage.getItem("exam")).currentState.record
-=======
         currentLevelId() {
 
-            return JSON.parse(localStorage.getItem("exam")).levelid
+            return JSON.parse(localStorage.getItem("exam")).levelId
         },
-        currentSubtestId() {
-
-            return JSON.parse(localStorage.getItem("exam")).currentState.subtestId
+        currentSubtestId(state) {
+            return state.currentModule.subtestId ?? JSON.parse(localStorage.getItem("exam")).currentState.subtestId
         },
         currentSubtestMaxTime: () => (id) => {
-            return JSON.parse(localStorage.getItem("exam")).module.map(
+            return JSON.parse(localStorage.getItem("exam")).modules.map(
                 function (e) {
-                    return e.subtest.filter(i => i.id === id)
+                    return e.subtests.filter(i => i.id === id)
                 }
-            )[0][0].maxtime
+            ).filter(item=>item.length)[0][0].maxTime
         },
         currentSubtestMaxScore: () => (id) => {
-            return JSON.parse(localStorage.getItem("exam")).module.map(
+            return JSON.parse(localStorage.getItem("exam")).modules.map(
                 function (e) {
-                    return e.subtest.filter(i => i.id === id)
+                    return e.subtests.filter(i => i.id === id)
                 }
-            )[0][0].maxscore
+            ).filter(item=>item.length)[0][0].subtest.maxScore
         },
         currentSubtestRecord() {
             return JSON.parse(localStorage.getItem("exam")).currentState.record
->>>>>>> main
             //return true
         },
         currentStateData() {
             return JSON.parse(localStorage.getItem("exam")).currentState
-<<<<<<< HEAD
-         },
-        moduleList(){
-            return JSON.parse(localStorage.getItem("exam")).modules
-=======
         },
         moduleList() {
-            return JSON.parse(localStorage.getItem("exam")).module
->>>>>>> main
+            return JSON.parse(localStorage.getItem("exam")).modules
         }
 
 

@@ -3,7 +3,7 @@
     <div class="text">{{CurrentQuestion}}</div>
     <div class="opros">
         <div class="zag">Варианты ответа:</div>
-            <button  v-for="item in CurrentAnswers" :key="item.id" type="button" class="btns" @click="sendAnswer([CurrentQuestionId,item.id])">{{item.answer}}</button>
+            <button  v-for="item in CurrentAnswers" :key="item.id" type="button" class="btns" @click="sendAnswer([CurrentQuestionId,item.id,getCurrentTimeInSecond,getNextQuestion])">{{item.answer}}</button>
         </div>
  
 </template>
@@ -33,7 +33,7 @@ import {mapActions,mapGetters} from 'vuex'
             }
         },
         computed:{
-            ...mapGetters(['getCurrentPointer'])
+            ...mapGetters(['getCurrentPointer','getCurrentTimeInSecond','getNextQuestion'])
         },
         methods:{            
             ...mapActions(['sendAnswer'])
