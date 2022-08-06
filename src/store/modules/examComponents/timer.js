@@ -5,24 +5,28 @@ export default {
         selectedTime: 0,
         timeLeft: '00:00',
         endTime: '0',
-        timerFinish:false
+        timerFinish: false,
+        secondsLeft:0
     },
     actions: {
-
-        setTime({dispatch},seconds) {           
-            clearInterval(intervalTimer);           
-            dispatch("timer",seconds)
-        },
-        timer({dispatch},seconds) {
-            const now = Date.now();
-            const end = now + seconds * 1000;           
-            dispatch("displayTimeLeft",seconds)
-            this.selectedTime = seconds;           
-            dispatch("displayEndTime",seconds)            
-            dispatch("countdown",end)
+        setTime({ dispatch,commit }, seconds) {
+            commit("resetTimer")
+            clearInterval(intervalTimer);
+            if(seconds){
+                dispatch("timer", seconds)
+            }
             
         },
-        countdown({dispatch},end) {
+        timer({ dispatch }, seconds) {
+            const now = Date.now();
+            const end = now + seconds * 1000;
+            dispatch("displayTimeLeft", seconds)
+            this.selectedTime = seconds;
+            dispatch("displayEndTime", seconds)
+            dispatch("countdown", end)
+
+        },
+        countdown({ dispatch }, end) {
 
             intervalTimer = setInterval(() => {
                 const secondsLeft = Math.round((end - Date.now()) / 1000);
@@ -36,46 +40,53 @@ export default {
 
                     return;
                 }
-              
-                dispatch("displayTimeLeft",secondsLeft)
+
+                dispatch("displayTimeLeft", secondsLeft)
+                dispatch("secondsRemain", secondsLeft)
             }, 1000);
         },
-        displayTimeLeft({commit},secondsLeft) {
+        displayTimeLeft({ commit }, secondsLeft) {
             const minutes = Math.floor((secondsLeft % 3600) / 60);
             const seconds = secondsLeft % 60;
-            commit("updateTimeleft",{"minutes":minutes,"seconds":seconds})
-           
+            commit("updateTimeleft", { minutes, seconds })
+
         },
-        displayEndTime({commit},timestamp) {
+        displayEndTime({ commit }, timestamp) {
             const end = new Date(timestamp);
             const hour = end.getHours();
-            const minutes = end.getMinutes();           
-            commit("updateEndtime",{"hour":hour,"minutes":minutes})
+            const minutes = end.getMinutes();
+            commit("updateEndtime", { hour, minutes })
+        },
+        secondsRemain({commit},seconds){
+            commit('updateSecondsLeft',seconds)
         }
 
     },
     mutations: {
-        updateEndtime(state,data){            
+        resetTimer(state){
+            state.selectedTime= 0,
+            state.timeLeft= '00:00',
+            state.endTime= '0',
+            state.timerFinish= false,
+            state.secondsLeft=0
+        },
+        updateEndtime(state, data) {
             state.endTime = `${hourConvert(data.hour)}:${zeroPadded(data.minutes)}`;
         },
-        updateTimeleft(state,data){            
-            state.timeLeft = `${zeroPadded(data.minutes)}:${zeroPadded(data.seconds)}`;            
+        updateTimeleft(state, data) {
+            state.timeLeft = `${zeroPadded(data.minutes)}:${zeroPadded(data.seconds)}`;
             if (data.minutes === 0 && data.seconds === 0) {
-                console.log("Time end");
-                state.timerFinish=true
-              
-
+                state.timerFinish = true
             }
-            
-
-            }
-        
-
+        },
+        updateSecondsLeft(state,data){
+            state.secondsLeft=data
+        }
     },
     getters: {
-        
-
-
+        getCurrentTimeInSecond(state){
+            return state.secondsLeft
+        }
     },
 
 }
