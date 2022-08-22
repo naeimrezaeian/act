@@ -83,7 +83,7 @@ const routes = [
     path: "/exam",
     name: "Exam",
     component: ACTexam,
-    beforeEnter: checkLogin,
+    //beforeEnter: checkLogin,
   },
   {
     path: "/finish",

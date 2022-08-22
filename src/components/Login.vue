@@ -58,35 +58,10 @@ export default {
 console.log("login")
           //
          await this.loginUser(this.currentUser)
-/*
-            if (localStorage.getItem("token")) {
 
-                if (this.currentStateData.start === null) {
-                    if (this.currentStateData.moduleId === null) {
-                        console.log("goto level")
-                        this.$router.push("/level");
-                    } else {
-                         console.log("goto module")
-                        this.$router.push("/module");
-                    }
-                } else {
-
-                    this.$router.push("/exam")
-
-                }
-
-            }
-            */
 
         }
 
-
-
-        // await this.$store.dispatch("loginUser",this.currentUser)
-
-
-
-        // this.currentUser.password=this.currentUser.login   
 
 
 

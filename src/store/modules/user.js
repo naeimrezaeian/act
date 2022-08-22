@@ -1,4 +1,4 @@
-import axios from 'axios'
+import httpClient from '@/httpClient';
 import router from '../../router'
 export default {
     state: {
@@ -11,7 +11,7 @@ export default {
         async loginUser({ commit }, user) {
            
             try {
-                var response = await axios.post('api/auth/user/login', { username: user.login, password: user.password })
+                var response = await httpClient.post('api/auth/user/login', { username: user.login, password: user.password })
                 if (response.data && response.data.success === true) {
 
                     localStorage.removeItem("token")
@@ -19,7 +19,7 @@ export default {
                     localStorage.setItem('token', response.data.result.token);
                     localStorage.setItem("exam", JSON.stringify(response.data.result.exam))
                     sessionStorage.setItem('isAuth', 'true');
-                    axios.defaults.headers.common['Authorization']=  'Bearer '+localStorage.getItem("token");
+                    httpClient.defaults.headers.common['Authorization']=  'Bearer '+localStorage.getItem("token");
                     const error = ''
                     const loading = false;                    
                     commit('updateLogin', { error: error, loading: loading })
@@ -44,7 +44,7 @@ export default {
         async startSubtest(_, data) {
             console.log("start subtest")
             try {
-                await axios.post('api/userexam/UserSubtests/StartSubtest/' + data)
+                await httpClient.post('api/userexam/UserSubtests/StartSubtest/' + data)
 
             } catch (error) {
                 console.log(error)
@@ -61,7 +61,7 @@ export default {
         async getCurrentState({commit}) {
             
             try {
-                const response = await axios.get('api/userexam/UserExamCurrentState')
+                const response = await httpClient.get('api/userexam/UserExamCurrentState')
                 if (response.data && response.data.success) {
                     const exam = JSON.parse(localStorage.getItem("exam"))
                     localStorage.removeItem('exam')
