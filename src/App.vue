@@ -27,7 +27,7 @@ export default {
     preloader
   },
   created(){
-    console.log("APP")
+    
 httpClient.defaults.showLoader = true;
 
     httpClient.interceptors.request.use(

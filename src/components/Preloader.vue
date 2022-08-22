@@ -28,6 +28,7 @@
   right: 0;
   left: 0;
   display: grid;
+  
   place-items: center;
 }
 .lds-roller {
