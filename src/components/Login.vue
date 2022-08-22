@@ -18,7 +18,7 @@
                     </div>
                     <div class="box">
                         <label for="pass"><img src="@/assets/img/pass.svg" alt=""></label>
-                        <input type="password" placeholder="Пароль" id="pass" v-model="currentUser.password">
+                        <input type="password" placeholder="Пароль" id="pass" autocomplete="off" v-model="currentUser.password">
                         <div class="info">
                             <img src="@/assets/img/info.svg" alt="">
                             <span></span>
@@ -55,15 +55,18 @@ export default {
     methods: {
         ...mapActions(['loginUser']),
         async handelSubmit() {
-
-            await this.loginUser(this.currentUser)
-
+console.log("login")
+          //
+         await this.loginUser(this.currentUser)
+/*
             if (localStorage.getItem("token")) {
 
                 if (this.currentStateData.start === null) {
                     if (this.currentStateData.moduleId === null) {
+                        console.log("goto level")
                         this.$router.push("/level");
                     } else {
+                         console.log("goto module")
                         this.$router.push("/module");
                     }
                 } else {
@@ -73,6 +76,7 @@ export default {
                 }
 
             }
+            */
 
         }
 

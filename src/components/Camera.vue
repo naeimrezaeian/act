@@ -90,6 +90,7 @@ formData.append('file',file)
  // setTimeout(function() { URL.revokeObjectURL(url); }, 100); 
 },
 stopRecord(){
+    console.log("camera stop")
  this.recorder.stop();
     this.isRecording = false;  
     this.stream.getTracks().forEach(track => { track.stop(); });

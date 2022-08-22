@@ -4,21 +4,57 @@ import  ACTlogin from './components/Login.vue'
 import  ACTlevel from './components/Level.vue'
 import  ACTmodule from './components/Module.vue'
 import  ACTexam from './components/Exam.vue'
-import  ACTnaeim from './components/NaeimTest.vue'
-import  ACTnaeim2 from './components/NaeimTest2.vue'
+import  ACTfinish from './components/FinishExam.vue'
 
-const checkLogin = (to, from, next) =>{ 
+
+
+const checkLogin=(to,from,next) =>{
   
-
-  console.log(to)
-  console.log(from )
-  if (to.meta.requiresVisitor  && !sessionStorage.getItem('isAuth')){
-    next({name:'Login'})
+  if (to.meta.requiresVisitor   || !localStorage.getItem("token")){
+    if (to.fullPath==="/"){ next() }else{ next({name:'Login'})  }
   }else{
-    next()
+    var data=JSON.parse(localStorage.getItem("exam"))
+ var currentState=data.currentState
+  if(currentState.start===null){   
+console.log(to.fullPath)
+   if (currentState.moduleId===null && to.fullPath!="/module"){
+    if (to.fullPath==="/level"){ next() }else{ next({name:'Level'})  }
+  }else{
+    
+    if (to.fullPath==="/module"){ next() }else{ next({name:'Module'})  }
   }
 
+   }else{
+    next({name:'Exam'})
+   }
 }
+}
+
+
+// const checkLogin=(to,from,next) =>{
+//   to
+//   from
+//   next
+  
+//   if ( localStorage.getItem("token")){
+//     var currentState=JSON.parse(localStorage.getItem("exam")).currentState
+//   console.log(currentState)
+//   if (currentState.start==null ){
+//     console.log("to:"+to.fullPath)
+//     console.log("from:"+from.fullPath)
+//    // next({name:"Level"})
+   
+//   }
+
+//   }else{
+//     next()
+//   }
+
+
+  
+  
+  
+// }
 
 
 const routes = [
@@ -26,38 +62,36 @@ const routes = [
     path: "/",
     name: "Login",
     component: ACTlogin,
+    beforeEnter: checkLogin,
+  
   },
   {
     path: "/level",
     name: "Level",
     component: ACTlevel,
+    //beforeEnter: checkLogin,
+   
   },
   {
     path: "/module",
     name: "Module",
     component: ACTmodule,
+    //beforeEnter: checkLogin,
+   
   },
   {
     path: "/exam",
     name: "Exam",
     component: ACTexam,
+    beforeEnter: checkLogin,
+  },
+  {
+    path: "/finish",
+    name: "Finish",
+    component: ACTfinish,
   },
   
-  {
-    path: "/naeim",
-    name: "NaeimTest",
-    beforeEnter: checkLogin,
-    meta: { requiresVisitor: false }  ,
-    component: ACTnaeim,
-  },
-  {
-    path: "/naeim2",
-    name: "NaeimTest2",
-    //beforeEnter: checkLogin,
-    
-    //meta: { requiresVisitor: false }  ,
-    component: ACTnaeim2,
-  },
+  
   
 ];
 

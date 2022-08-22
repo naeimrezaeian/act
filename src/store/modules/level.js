@@ -1,5 +1,4 @@
-import axios from "axios"
-
+import httpClient from '@/httpClient';
 export default {
     state:{
         title:'',
@@ -7,12 +6,16 @@ export default {
     },
     actions:{
 
-        async levelInformation({commit},levelData){           
-        const response= await axios.get("levels/"+levelData)
-        if (response.data ){
-            commit('updateLevel',response.data)
+        async levelInformation({commit},levelData){    
+               
+       const response= await httpClient.get("api/userexam/levels/"+levelData)
+       
+        if (response.data && response.data.success===true){
+            commit('updateLevel',response.data.result)
         }
-        }
+        
+    
+}
     },
     mutations:{
         updateLevel(state,data){
