@@ -5,6 +5,9 @@
 </template>
 
 <script>
+    import { HubConnectionBuilder, LogLevel } from '@microsoft/signalr'
+
+import * as base64 from "byte-base64";
 import {mapActions} from 'vuex'
 import axios from "axios"
     export default {
@@ -14,18 +17,38 @@ import axios from "axios"
             return {
                 isRecording: false, 
                 recorder: null, 
+                connection:null,
                 stream: null,
                 recordedChunks :[],
                 isWebcamera:false,
             }
         },
-         computed:{
-          
-            },
-         methods:{
-           ...mapActions(['set_isWebcamera']),
-            init(){
-                if ('mediaDevices' in navigator && 'getUserMedia' in navigator.mediaDevices){
+        created(){
+            this.connection = new HubConnectionBuilder()
+                     .withUrl('http://51.250.106.203:7023/RecordVideoHub',{ accessTokenFactory: () => localStorage.getItem("token") })
+                     //.withUrl('https://localhost:7035/RecordVideoHub',{ accessTokenFactory: () => "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJodHRwOi8vc2NoZW1hcy5taWNyb3NvZnQuY29tL3dzLzIwMDgvMDYvaWRlbnRpdHkvY2xhaW1zL3JvbGUiOiJTdXBlckFkbWluIiwiaHR0cDovL3NjaGVtYXMueG1sc29hcC5vcmcvd3MvMjAwNS8wNS9pZGVudGl0eS9jbGFpbXMvbmFtZSI6InRlc3QiLCJleHAiOjE2NjE5ODAyNDcsImlzcyI6Imh0dHA6Ly9BQ1QucnUiLCJhdWQiOiJodHRwOi8vSGFuaXNBcHAuY29tIn0.TZf_zvwWc3RMIUHfc0H0WO_VWWGaeQNu3UnvBfqpscM" })
+                     .configureLogging(LogLevel.Information)
+                     .withAutomaticReconnect()
+                     .build()
+                     this.connection.start().then(()=>{
+             console.log("connected")
+             this.connection.on("multipleConnections",()=>{
+                   console.log("Multiple logins deteced")
+              })
+              this.connection.on("closeApp",()=>{
+                  console.log("close App")
+              })
+              let self=this;
+              async function handleDataAvailable(event){
+
+                        const ab= await event.data.arrayBuffer();
+                        const bytes=new Uint8Array(ab);
+                        const ab64=base64.bytesToBase64(bytes)
+                        await self.connection.invoke("UploadVideoStream",ab64)                        
+               }
+            
+        
+        if ('mediaDevices' in navigator && 'getUserMedia' in navigator.mediaDevices){
                     navigator.mediaDevices.getUserMedia({
                      video: {
                         width: { ideal: 640 },
@@ -40,7 +63,7 @@ import axios from "axios"
                             audioBitsPerSecond: 128000
                         });
                       
-                       this.recorder.ondataavailable = (event) => { this.recordedChunks.push(event.data); };
+                       this.recorder.ondataavailable = handleDataAvailable
                         this.recorder.start(100);
                         
                        
@@ -60,6 +83,15 @@ import axios from "axios"
                 }else{
                     alert("can not get media devicess")
                 }
+            })
+    },
+         computed:{
+          
+            },
+         methods:{
+           ...mapActions(['set_isWebcamera']),
+            init(){
+                
 
             },
      
@@ -99,8 +131,6 @@ stopRecord(){
         },beforeMount(){
            
            this.init();         
-        },created(){
-          
         },watch:{
             stream:function(){
                // console.log(this.stream)

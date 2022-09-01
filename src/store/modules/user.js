@@ -10,7 +10,7 @@ export default {
     actions: {
         async loginUser({ commit }, user) {
             try {
-                var response = await axios.post('api/user/login', { username: user.login, password: user.password })
+                var response = await axios.post('api/auth/user/login', { username: user.login, password: user.password })
                 if (response.data && response.data.success === true) {
 
                     localStorage.removeItem("token")
