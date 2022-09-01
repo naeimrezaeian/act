@@ -55,6 +55,7 @@ import questionText from './ExamElements/questionText.vue'
 import questionLetter from './ExamElements/questionLetter.vue'
 import questionAudio from './ExamElements/questionAudio.vue'
 import questionVideo from './ExamElements/questionVideo.vue'
+import axios from 'axios'
 export default {
   name: 'ACTexam',
   components: {
@@ -150,6 +151,8 @@ export default {
     await this.subtestQuestions(this.currentSubtestId)
     this.updateQuestionPointer(this.currentStateData.questionId)
     this.updateQuestion();
+    var examAnswers= await axios.get("api/Questions/GetAnswers/"+this.currentSubtestId);
+    console.log({method: 'Exam.Created', data:examAnswers.data})
     this.setTime(this.currentStateData.start ?? this.currentSubtestMaxTime)
   },
   mounted() {
