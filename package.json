@@ -10,7 +10,9 @@
     "server": "nodemon ./server/index.js"
   },
   "dependencies": {
+    "@microsoft/signalr": "^6.0.8",
     "axios": "^0.27.2",
+    "byte-base64": "^1.1.0",
     "core-js": "^3.8.3",
     "express-fileupload": "^1.4.0",
     "formidable": "^2.0.1",
