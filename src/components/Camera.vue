@@ -26,7 +26,7 @@ export default {
     created() {
         this.connection = new HubConnectionBuilder()
             .withUrl('http://51.250.106.203:7023/RecordVideoHub', { accessTokenFactory: () => localStorage.getItem("token") })
-            //.withUrl('https://localhost:7035/RecordVideoHub',{ accessTokenFactory: () => "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJodHRwOi8vc2NoZW1hcy5taWNyb3NvZnQuY29tL3dzLzIwMDgvMDYvaWRlbnRpdHkvY2xhaW1zL3JvbGUiOiJTdXBlckFkbWluIiwiaHR0cDovL3NjaGVtYXMueG1sc29hcC5vcmcvd3MvMjAwNS8wNS9pZGVudGl0eS9jbGFpbXMvbmFtZSI6InRlc3QiLCJleHAiOjE2NjE5ODAyNDcsImlzcyI6Imh0dHA6Ly9BQ1QucnUiLCJhdWQiOiJodHRwOi8vSGFuaXNBcHAuY29tIn0.TZf_zvwWc3RMIUHfc0H0WO_VWWGaeQNu3UnvBfqpscM" })
+            //.withUrl('https://localhost:7035/RecordVideoHub',{ accessTokenFactory: () =>  localStorage.getItem("token")})
             .configureLogging(LogLevel.Information)
             .withAutomaticReconnect()
             .build()
