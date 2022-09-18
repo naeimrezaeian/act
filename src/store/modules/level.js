@@ -6,6 +6,9 @@ export default {
     },
     actions:{
 
+        async startUserLevel({commit}){
+            await httpClient.post("api/userexam/levels/StartUserLevel")
+        },
         async levelInformation({commit},levelData){    
                
        const response= await httpClient.get("api/userexam/levels/"+levelData)

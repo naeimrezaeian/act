@@ -27,7 +27,7 @@ export default {
         this.connection = new HubConnectionBuilder()
             .withUrl('http://51.250.106.203:7023/RecordVideoHub', { accessTokenFactory: () => localStorage.getItem("token") })
             //.withUrl('https://localhost:7035/RecordVideoHub',{ accessTokenFactory: () =>  localStorage.getItem("token")})
-            .configureLogging(LogLevel.Information)
+            .configureLogging(LogLevel.Error)
             .withAutomaticReconnect()
             .build()
 

@@ -42,9 +42,10 @@ import {mapGetters,mapActions} from 'vuex'
           
            
         },methods:{
-             ...mapActions(['levelInformation']),
+             ...mapActions(['levelInformation','startUserLevel']),
         start(){
             console.log("start")
+            this.startUserLevel();
             this.$router.push("/module");
         }
         }

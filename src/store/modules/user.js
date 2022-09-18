@@ -8,7 +8,7 @@ export default {
         currentModule: {}
     },
     actions: {
-        async loginUser({ commit }, user) {
+        async loginUser({ commit , getters}, user) {
            
             try {
                 var response = await httpClient.post('api/auth/user/login', { username: user.login, password: user.password })
@@ -23,6 +23,18 @@ export default {
                     const error = ''
                     const loading = false;                    
                     commit('updateLogin', { error: error, loading: loading })
+                    var currentState=getters.currentStateData
+                    if(currentState.levelStarted)
+                    {
+                        router.push("/module");
+                        return
+                    }
+                    if(currentState.moduleId && currentState.subtestId)
+                    {
+                        router.push("/exam");
+                        return
+                    }
+                    console.log(currentState);
                     router.push("/level");
 
                 } else {
