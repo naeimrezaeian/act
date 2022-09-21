@@ -18,6 +18,7 @@
 
 
 <script>
+
 import {mapGetters,mapActions} from 'vuex'
 
     export default {
@@ -32,22 +33,20 @@ import {mapGetters,mapActions} from 'vuex'
            
         } ,
         async created(){
-           
-
             await this.levelInformation(this.currentLevelId); 
             
-
-                   
-          
-          
-           
-        },methods:{
+        },
+        methods:{
              ...mapActions(['levelInformation','startUserLevel']),
         start(){
             console.log("start")
             this.startUserLevel();
             this.$router.push("/module");
         }
+        },
+        mounted(){
+            
+            this.$soketio.start();
         }
         
         

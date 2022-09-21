@@ -41,14 +41,13 @@ export default {
         await this.getCurrentState()
        
        
-        const currentmoudle = JSON.parse(localStorage.getItem("exam")).modules.map(
-            function (e) {
-                const subtest = e.subtests.filter(i => i.status === 'active')
-                return subtest.length ? { module: e, subtest: subtest[0] } : null
-            }
-        ).filter(item => item)[0]
-         
-        if (currentmoudle) {
+            const currentmoudle = JSON.parse(localStorage.getItem("exam")).modules.map(
+                function (e) {
+                    const subtest = e.subtests.filter(i => i.status === 'active')
+                    return subtest.length ? { module: e, subtest: subtest[0] } : null
+                }
+            ).filter(item => item)[0]
+            if (currentmoudle) {
             
             await this.setCurrentSubtest({ moduleId: currentmoudle.module.id, subtestId: currentmoudle.subtest.subtest.id })
             const response = await httpClient.get("api/userexam/usersubtests/" + this.currentSubtestId())
@@ -61,6 +60,9 @@ export default {
             console.log('exam done')
             this.$router.push({name:'Finish'});
         }
+        
+
+        
        
 
     }, methods: {
@@ -71,6 +73,9 @@ export default {
             await this.getCurrentState()
             this.$router.push("/exam");
         }
+    },
+    mounted(){
+        this.$soketio.start();
     }
 
 }

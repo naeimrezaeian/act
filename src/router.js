@@ -6,6 +6,14 @@ import  ACTmodule from './components/Module.vue'
 import  ACTexam from './components/Exam.vue'
 import  ACTfinish from './components/FinishExam.vue'
 
+const checkLocalStorage=(to,from,next)=>{
+  if (localStorage.getItem("exam")===null){
+    console.log("LocalStroge error ")
+    next({name:'Login'})
+  }else{
+    next()
+  }
+}
 
 
 const checkLogin=(to,from,next) =>{
@@ -28,33 +36,9 @@ console.log(to.fullPath)
     next({name:'Exam'})
    }
 }
+
 }
 
-
-// const checkLogin=(to,from,next) =>{
-//   to
-//   from
-//   next
-  
-//   if ( localStorage.getItem("token")){
-//     var currentState=JSON.parse(localStorage.getItem("exam")).currentState
-//   console.log(currentState)
-//   if (currentState.start==null ){
-//     console.log("to:"+to.fullPath)
-//     console.log("from:"+from.fullPath)
-//    // next({name:"Level"})
-   
-//   }
-
-//   }else{
-//     next()
-//   }
-
-
-  
-  
-  
-// }
 
 
 const routes = [
@@ -69,21 +53,22 @@ const routes = [
     path: "/level",
     name: "Level",
     component: ACTlevel,
-    //beforeEnter: checkLogin,
+    beforeEnter: [checkLocalStorage]
    
   },
   {
     path: "/module",
     name: "Module",
     component: ACTmodule,
-    //beforeEnter: checkLogin,
+    beforeEnter: [checkLocalStorage]
+    
    
   },
   {
     path: "/exam",
     name: "Exam",
     component: ACTexam,
-    //beforeEnter: checkLogin,
+    beforeEnter: [checkLocalStorage]
   },
   {
     path: "/finish",

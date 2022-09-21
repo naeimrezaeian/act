@@ -24,11 +24,8 @@ export default {
                     const loading = false;                    
                     commit('updateLogin', { error: error, loading: loading })
                     var currentState=getters.currentStateData
-                    if(currentState.levelStarted)
-                    {
-                        router.push("/module");
-                        return
-                    }
+                   
+
                     if(currentState.moduleId && currentState.subtestId)
                     {
                         router.push("/exam");
@@ -43,6 +40,13 @@ export default {
                     const loading = false;
                     commit('updateLogin', { error: error, loading: loading })
                 }
+
+                if(currentState.levelStarted)
+                {
+                    router.push("/module");
+                    return
+                }
+
             }
             catch (ex) {
                 const error = 'Ошибка соединения к серверу'

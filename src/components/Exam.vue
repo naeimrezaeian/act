@@ -158,6 +158,7 @@ export default {
   mounted() {
     // this.Webcamera=this.$refs.camera.webcamera
     // console.log(this.isWebcamera)
+    this.$soketio.start();
     this.$store.subscribe(async (mutation) => {
       switch (mutation.type) {
         case 'updateTimeleft':

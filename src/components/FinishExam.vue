@@ -35,6 +35,10 @@ export default {
                 this.$router.push({name:'Login'});
 
             }
+        },
+        mounted(){
+            
+            this.$soketio.start();
         }
 }
 </script>

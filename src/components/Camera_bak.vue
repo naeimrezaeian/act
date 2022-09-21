@@ -5,10 +5,12 @@
 </template>
 
 <script>
+import { HubConnectionBuilder, LogLevel } from '@microsoft/signalr'
+
 import * as base64 from "byte-base64";
 import { mapActions } from 'vuex'
 import axios from "axios"
-
+import router from "@/router";
 export default {
 
     name: 'ACTCamera',
@@ -22,22 +24,34 @@ export default {
             isWebcamera: false,
         }
     },
-    mounted(){
-        
-        
-    },
     created() {
-        if (this.$soketio.client.state==="Disconnected"){           
-            this.$soketio.start()
-        }       
-       
-        let self = this;
+        this.connection = new HubConnectionBuilder()
+            .withUrl('http://51.250.106.203:7023/RecordVideoHub', { accessTokenFactory: () => localStorage.getItem("token") })
+            //.withUrl('https://localhost:7035/RecordVideoHub',{ accessTokenFactory: () =>  localStorage.getItem("token")})
+            .configureLogging(LogLevel.Error)
+            .withAutomaticReconnect()
+            .build()
+
+        this.connection.start().then(() => {
+            console.log("connected")
+            this.connection.on("multipleConnections", () => {
+                console.log("Multiple logins deteced")
+                localStorage.removeItem("token")
+        localStorage.removeItem("exam")
+        router.push({name:'Login'})
+        location.reload()
+
+            })
+            this.connection.on("closeApp", () => {
+                console.log("close App")
+            })
+            let self = this;
             async function handleDataAvailable(event) {
-               
+
                 const ab = await event.data.arrayBuffer();
                 const bytes = new Uint8Array(ab);
                 const ab64 = base64.bytesToBase64(bytes)
-                await self.$soketio.client.invoke("UploadVideoStream", ab64)
+                await self.connection.invoke("UploadVideoStream", ab64)
             }
             if ('mediaDevices' in navigator && 'getUserMedia' in navigator.mediaDevices) {
                 navigator.mediaDevices.getUserMedia({
@@ -74,11 +88,13 @@ export default {
             } else {
                 this.webcam = "Webcam unsuported"
             }
-        
+        })
         this.init()
 
     },
-    
+    computed: {
+
+    },
     methods: {
         ...mapActions(['set_isWebcamera']),
         init() {
