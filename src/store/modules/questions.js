@@ -15,7 +15,8 @@ export default {
             const response = await httpClient.get('api/userexam/questions/' + subtest)
 
             if (response.data && response.data.success === true) {
-                
+                //console.log("new")
+                //console.log(response.data.result)
                 commit('updateQuestions', response.data.result)
                 commit('updatePointer', response.data.result[0].id)
             }
@@ -50,15 +51,31 @@ export default {
     },
     mutations: {
         updateQuestions(state, data) {
-            state.questionsList = data
+            //new code
+          
+            let res=[]
+            data.map(items =>{items.questionTexts.map(i =>{return i}).map(j => {res.push(Object.assign({},
+            {"type":items.type,"desc":items.desc,"status":items.status,"listenLimitCount":items.listenLimitCount,"fileId":items.fileId},
+            {"id":j.questionId,"question":j.questionTitle,"answers":j.answers}))});
+            })
+            //
+            //state.questionsList = data
+            console.log(res)
+            state.questionsList=res
+
+
         },
         updatePointer(state, value) {
             state.currentPointer = value
         }
     },
     getters: {
-        allQuestions: (state) => state.questionsList,
+        allQuestions: (state) =>() =>{
+            return state.questionsList
+           
+        },
         getQuestion: (state) => (pointer) =>{
+            
             return state.questionsList.filter(question => question.id === pointer)[0]},
         getCurrentPointer: (state) => state.currentPointer,
         getNextQuestion: (_,getters) => {

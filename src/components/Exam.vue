@@ -18,11 +18,11 @@
           :CurrentQuestion="this.CurrentQuestion" />
         <questionAudio v-if="CurrentQuestionType === 'audio'" :CurrentTitle="this.CurrentTitle"
           :CurrentQuestion="this.CurrentQuestion" :CurrentAnswers="this.CurrentAnswers"
-          :CurrentAudioFile="this.CurrentAudioFile" :CurrentAudioLimit="this.CurrentAudioLimit"
+          :CurrentAudioFile="this.CurrentFile" :CurrentAudioLimit="this.CurrentLimit"
           :SelectedAnswers="this.SelectedAnswers" />
         <questionVideo v-if="CurrentQuestionType === 'video'" :CurrentTitle="this.CurrentTitle"
           :CurrentQuestion="this.CurrentQuestion" :CurrentAnswers="this.CurrentAnswers"
-          :CurrentVideoFile="this.CurrentVideoFile" :CurrentVideoLimit="this.CurrentVideoLimit"
+          :CurrentVideoFile="this.CurrentFile" :CurrentVideoLimit="this.CurrentLimit"
           :SelectedAnswers="this.SelectedAnswers" />
 
         <a class="btn red" v-show="this.LastQuestion" @click="send">ОТПРАВИТЬ</a>
@@ -31,7 +31,8 @@
         <timerComponent />
 
         <ul>
-          <template v-for="(question, index) in this.allQuestions " :key="question.id">
+          <template v-for="(question, index) in this.allQuestions() " :key="question.id">
+                       
             <li v-if="question.id === this.getCurrentPointer" @click="pointerclick(question.id)" class="active">
               {{ index + 1 }}</li>
             <li v-else @click="pointerclick(question.id)">{{ index + 1 }}</li>
@@ -88,10 +89,8 @@ export default {
       CurrentTitle: '',
       CurrentQuestionType: '',
       CurrentAnswers: [],
-      CureentAudioFile: '',
-      CurrentAudioLimit: 0,
-      CurrentVideoFile: '',
-      CurrentVideoLimit: 0,
+      CureentFile: '',
+      CurrentLimit: 0,    
       CurrentPointer: 0,
       SelectedAnswers: [],
       LastQuestion: false,
@@ -113,10 +112,8 @@ export default {
       this.CurrentQuestion = this.getQuestion(this.getCurrentPointer).question
       this.CurrentQuestionType = this.getQuestion(this.getCurrentPointer).type
       this.CurrentAnswers = this.getQuestion(this.getCurrentPointer).answers
-      this.CurrentAudioFile = this.getQuestion(this.getCurrentPointer).file || ''
-      this.CurrentAudioLimit = this.getQuestion(this.getCurrentPointer).limit || 0
-      this.CurrentVideoFile = this.getQuestion(this.getCurrentPointer).file || ''
-      this.CurrentVideoLimit = this.getQuestion(this.getCurrentPointer).limit || 0
+      this.CurrentFile = this.getQuestion(this.getCurrentPointer).fileId || ''      
+      this.CurrentLimit = this.getQuestion(this.getCurrentPointer).listenLimitCount || 0 
       this.CurrentTitle = this.getQuestion(this.getCurrentPointer).desc
       if (this.getNextQuestion) {
          this.LastQuestion = false
