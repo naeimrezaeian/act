@@ -24,12 +24,11 @@ export default {
         },
        
         updateQuestionPointer({ commit,state }, data) {
-                console.log("naeim")
-                console.log(data)
+                
                 if(!data && Object.keys(state.questionsList).length>0){                    
                 data=state.questionsList[0].id  
-                console.log("test")     
-                console.log(data)         
+                 
+                        
                }
                 commit("updatePointer", data)
         },
@@ -54,7 +53,7 @@ export default {
     mutations: {
         updateQuestions(state, data) {
             //new code
-          
+          console.log(data)
             let res=[]
             data.map(items =>{items.questionTexts.map(i =>{return i}).map(j => {res.push(Object.assign({},
             {"type":items.type,"desc":items.desc,"status":items.status,"listenLimitCount":items.listenLimitCount,"fileId":items.fileId},
@@ -62,7 +61,7 @@ export default {
             })
             //
             //state.questionsList = data
-            //console.log(res)
+            console.log(res)
             state.questionsList=res
 
 

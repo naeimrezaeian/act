@@ -34,7 +34,8 @@
           <template v-for="(question, index) in this.allQuestions() " :key="question.id">
                        
             <li v-if="question.id === this.getCurrentPointer" @click="pointerclick(question.id)" class="active">
-              {{ index + 1 }}</li>
+              {{ index + 1 }} </li>
+              
             <li v-else @click="pointerclick(question.id)">{{ index + 1 }}</li>
           </template>
         </ul>
