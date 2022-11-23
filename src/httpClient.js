@@ -13,7 +13,7 @@ requestFetch.interceptors.request.use((request)=>{
 
 
 requestFetch.interceptors.response.use((response)=>{
-    console.log(response.status)
+   
     if(response.status ===200 || response.status===201){
         return Promise.resolve(response)
     }else{

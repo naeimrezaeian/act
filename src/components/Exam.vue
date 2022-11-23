@@ -107,6 +107,7 @@ export default {
     ...mapActions(['subtestQuestions', 'setTime', 'updateQuestionPointer', 'finishExam','getCurrentState','getAnswers']),
 
     updateQuestion() {
+     
       if(this.getCurrentPointer !=null){
       this.CurrentQuestionId = this.getQuestion(this.getCurrentPointer).id
       this.CurrentQuestion = this.getQuestion(this.getCurrentPointer).question
@@ -115,6 +116,7 @@ export default {
       this.CurrentFile = this.getQuestion(this.getCurrentPointer).fileId || ''      
       this.CurrentLimit = this.getQuestion(this.getCurrentPointer).listenLimitCount || 0 
       this.CurrentTitle = this.getQuestion(this.getCurrentPointer).desc
+      
       if (this.getNextQuestion) {
          this.LastQuestion = false
       } else {
@@ -158,6 +160,7 @@ export default {
     this.$soketio.start();
     this.$store.subscribe(async (mutation) => {
       switch (mutation.type) {
+        
         case 'updateTimeleft':
           this.timerFinish = this.$store.state.timer.timerFinish
           if (this.timerFinish) {
@@ -165,8 +168,11 @@ export default {
           }
           break
         case 'updateSendAnswer':
+        
           if (this.getNextQuestion) {
+            
             this.updateQuestionPointer(this.getNextQuestion.id)
+            
           }
           this.SelectedAnswers = this.selectedAnswers[0]
           this.updateQuestion()
