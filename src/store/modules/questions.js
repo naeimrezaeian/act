@@ -57,7 +57,7 @@ export default {
             let res=[]
             data.map(items =>{items.questionTexts.map(i =>{return i}).map(j => {res.push(Object.assign({},
             {"type":items.type,"desc":items.desc,"status":items.status,"listenLimitCount":items.listenLimitCount,"fileId":items.fileId},
-            {"id":j.questionId,"question":j.questionTitle,"answers":j.answers}))});
+            {"id":j.id,"question":j.questionTitle,"answers":j.answers,"questionId":j.questionId}))});
             })
             //
             //state.questionsList = data

@@ -11,9 +11,9 @@ export default {
             commit("updateSendAnswer",response.data.result)
             }
         },
-        async sendAnswer({commit},[questionId,answerId,nextQuestion]){       
+        async sendAnswer({commit},[questionId,questionTextId,answerId,nextQuestion]){       
            
-            const response= await httpClient.post("api/userexam/questions/examAnswer/",{questionId,answerId,nextQuestion:nextQuestion?nextQuestion.id:null},{showLoader:false})
+            const response= await httpClient.post("api/userexam/questions/examAnswer/",{questionId,questionTextId,answerId,nextQuestion:nextQuestion?nextQuestion.id:null},{showLoader:false})
           
             commit("updateSendAnswer",response.data.result)
         } 

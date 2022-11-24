@@ -5,7 +5,7 @@
         <div class="zag">Варианты ответа:</div>
      <template v-for="item in CurrentAnswers" :key="item.id">
             <button v-if="isAnswer(item.id)" type="button" class="btns" style="background-color: red;" @click="sendAnswer([CurrentQuestionId,item.id,getCurrentTimeInSecond,getNextQuestion])">{{item.answer}}</button>
-           <button v-else type="button" class="btns"  @click="sendAnswer([CurrentQuestionId,item.id,getNextQuestion])">{{item.answer}}</button>
+           <button v-else type="button" class="btns"  @click="sendAnswer([CurrentQuestionId,null,item.id,getNextQuestion])">{{item.answer}}</button>
         </template>
         </div>
  
