@@ -19,9 +19,7 @@
 
 <script>
 import {mapActions,mapGetters} from 'vuex'
-//sendAnswer([CurrentQuestionId,null,item.id,getNextQuestion]
-//<button v-for="item in CurrentAnswers" v-bind:class=" this.SelectedAnswers[this.getCurrentPointer] == item.id ? 'answer_select':'' " :key="item.id" type="button" class="btns"  @click="sendAnswer([getCurrentPointer,null,item.id,getNextQuestion])">{{item.answer}}</button>
-    export default {
+  export default {
         name:"questionAudio",
         data(){
             return {
