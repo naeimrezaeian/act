@@ -85,8 +85,10 @@ export default {
         getNextQuestion: (state) => {
           
             const index = state.questionsList.indexOf(state.questionsList.filter(question => question.id === state.currentPointer)[0])
-            
+            console.log("Index")
+            console.log(index)
              if (index >= state.questionsList.length-1) return null
+             console.log(state.questionsList[index+1])
             return state.questionsList[index+1]
         }
     }

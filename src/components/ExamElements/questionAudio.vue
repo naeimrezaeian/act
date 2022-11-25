@@ -9,15 +9,18 @@
             </div>
                 <div class="text">{{CurrentQuestion}} </div>                
             <div class="opros">
-                <div class="zag">Варианты ответа:</div>             
-                    <button v-for="item in CurrentAnswers" v-bind:class=" this.SelectedAnswers[this.getCurrentPointer] == item.id ? 'answer_select':'' " :key="item.id" type="button" class="btns"  @click="sendAnswer([getCurrentPointer,item.id])">{{item.answer}}</button>
-                </div>
+                <div class="zag">Варианты ответа:</div>  
+                <template v-for="item in CurrentAnswers" :key="item.id">
+                    <button v-if="isAnswer(item.id)" type="button" class="btns" style="background-color: red;" @click="sendAnswer([CurrentQuestionId,item.id,getCurrentTimeInSecond,getNextQuestion])">{{item.answer}}</button>
+           <button v-else type="button" class="btns"  @click="sendAnswer([CurrentQuestionId,CurrentId,item.id,getNextQuestion])">{{item.answer}}</button>
+            </template>           
+                    </div>
 </template>
 
 <script>
 import {mapActions,mapGetters} from 'vuex'
-
-
+//sendAnswer([CurrentQuestionId,null,item.id,getNextQuestion]
+//<button v-for="item in CurrentAnswers" v-bind:class=" this.SelectedAnswers[this.getCurrentPointer] == item.id ? 'answer_select':'' " :key="item.id" type="button" class="btns"  @click="sendAnswer([getCurrentPointer,null,item.id,getNextQuestion])">{{item.answer}}</button>
     export default {
         name:"questionAudio",
         data(){
@@ -51,16 +54,32 @@ import {mapActions,mapGetters} from 'vuex'
             SelectedAnswers:{
                 type:Object,
                 require:true
+            },
+            CurrentQuestionId:{
+                type:String,
+                require:true
+            },           
+            CurrentId:{
+                type:String,
+                require:true 
             }
 
         },
         computed:{
-            ...mapGetters(['getCurrentPointer']),
+            ...mapGetters(['getCurrentPointer','getNextQuestion','selectedAnswers']),
+            answersList(){
+            if(this.selectedAnswers[0]){
+          return  this.selectedAnswers[0].map(item => item.answerId)
+            }else{                
+          return []
+            }
+        }
           
         },        
         
         methods:{
             ...mapActions(['sendAnswer']),
+            isAnswer(id){           return this.answersList.includes(id) },
             playAudio(){
                 console.log("play "+this.CurrentAudioFile)
                 this.AudioBtn=!this.AudioBtn
@@ -83,12 +102,5 @@ import {mapActions,mapGetters} from 'vuex'
 </script>
 
 <style  scoped>
-.btn_play{
-    background-color: rgb(224, 224, 224);
-    cursor: default;
-}
-.answer_select{
-    color:yellow !important;
 
-}
 </style>

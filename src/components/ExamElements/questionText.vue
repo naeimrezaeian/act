@@ -47,12 +47,7 @@ import {mapActions,mapGetters} from 'vuex'
         },
         methods:{            
             ...mapActions(['sendAnswer']),
-            isAnswer(id){    
-                          
-                return this.answersList.includes(id) 
-                
-                
-            }
+            isAnswer(id){           return this.answersList.includes(id) }
         },
        async created(){
          // await this.sendAnswer([ "3ff008c9-88ff-4df0-be69-56d8803cf167", "3ff008c9-88ff-4df0-be69-56d8803cf16e", 500, null ]) 

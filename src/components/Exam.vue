@@ -16,10 +16,12 @@
 
         <questionLetter v-if="CurrentQuestionType === 'letter'" :CurrentTitle="this.CurrentTitle"
           :CurrentQuestion="this.CurrentQuestion" />
+
         <questionAudio v-if="CurrentQuestionType === 'audio'" :CurrentTitle="this.CurrentTitle"
           :CurrentQuestion="this.CurrentQuestion" :CurrentAnswers="this.CurrentAnswers"
           :CurrentAudioFile="this.CurrentFile" :CurrentAudioLimit="this.CurrentLimit"
-          :SelectedAnswers="this.SelectedAnswers" />
+          :SelectedAnswers="this.SelectedAnswers" :CurrentQuestionId="this.CurrentQuestionId" :CurrentId="this.CurrentId"/>
+
         <questionVideo v-if="CurrentQuestionType === 'video'" :CurrentTitle="this.CurrentTitle"
           :CurrentQuestion="this.CurrentQuestion" :CurrentAnswers="this.CurrentAnswers"
           :CurrentVideoFile="this.CurrentFile" :CurrentVideoLimit="this.CurrentLimit"
@@ -110,7 +112,8 @@ export default {
     updateQuestion() {
      
       if(this.getCurrentPointer !=null){
-      this.CurrentQuestionId = this.getQuestion(this.getCurrentPointer).id
+      this.CurrentQuestionId = this.getQuestion(this.getCurrentPointer).questionId
+      this.CurrentId = this.getQuestion(this.getCurrentPointer).id
       this.CurrentQuestion = this.getQuestion(this.getCurrentPointer).question
       this.CurrentQuestionType = this.getQuestion(this.getCurrentPointer).type
       this.CurrentAnswers = this.getQuestion(this.getCurrentPointer).answers

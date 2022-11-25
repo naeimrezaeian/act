@@ -12,7 +12,8 @@ export default {
             }
         },
         async sendAnswer({commit},[questionId,questionTextId,answerId,nextQuestion]){       
-           
+           console.log("send Answer")
+           console.log(questionId,questionTextId,answerId,nextQuestion)
             const response= await httpClient.post("api/userexam/questions/examAnswer/",{questionId,questionTextId,answerId,nextQuestion:nextQuestion?nextQuestion.id:null},{showLoader:false})
           
             commit("updateSendAnswer",response.data.result)
