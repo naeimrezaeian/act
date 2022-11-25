@@ -97,7 +97,10 @@ export default {
                         audioBitsPerSecond: 128000
                     });
 
-                    this.recorder.ondataavailable = (event) => { this.recordedChunks.push(event.data); };
+                    this.recorder.ondataavailable = (event) => { 
+                        
+                        this.recordedChunks.push(event.data); 
+                    };
                     this.recorder.start(100);
 
 
