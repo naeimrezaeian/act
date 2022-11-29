@@ -1,11 +1,14 @@
 <template>
 <div>
   <p>Test Page</p>
-
+ 
   <div class="audio-vopros">
                 <button type="button"  class="btn"  @click="getAudio()"><p>ПРОСЛУШАТЬ ВОПРОС</p>
                 </button>
   </div>
+<br/><br/>
+
+
 <br/><br/>
 </div>
 </template>
@@ -17,34 +20,31 @@ export default {
   data (){
     return {
       fileId:"3ff008c9-88ff-4df0-be69-56d8803cf160",
-      accessCode:null
+      accessCode:null,
+      audioContent:null,
+      audio: new Audio(),
+     
 
     }
   },
-  components: {
-  
-
-  },
   methods: { 
 
+   
     async getAudio(){
       console.log("Play file")
+      var reader = new FileReader();
+const responseFile = await httpClient.get('/api/files/DownloadFile/' + this.fileId+"/"+this.accessCode,{ responseType: 'blob' })
+reader.readAsBinaryString(responseFile.data);
 
-      var audio = new Audio("uploads/m1.mp3")
-        audio.play()
-    //  const responseFile = await httpClient.get('/api/files/DownloadFile/' + this.fileId+"/"+this.accessCode)
-      //var blob = new Blob(responseFile.data)
-      //var mp3 = new Blob([responseFile.data], { type: 'application/octet-stream' })
-      //var url = (window.URL || window.webkitURL).createObjectURL( mp3 );
+reader.onload = function(){
+      var arrayBuffer = reader.result;
+      var base64str = btoa( arrayBuffer);
+      this.audio.src="data:audio/wav;base64,"+base64str
+      this.audio.play()
+}.bind(this)
      
-   //   var reader = new FileReader();
-    //  reader.readAsDataURL(mp3);
-
-      //reader.onload = function() {
-       
-
-//};
-               
+      
+        
     }
    
   },

@@ -21,15 +21,14 @@ requestFetch.interceptors.response.use((response)=>{
         return Promise.reject(response)
     }
 },(error)=>{
-    if (401 === error.response.status) {
-        console.log("******************")
+    if (401 === error.response.status) {        
         localStorage.removeItem("token")
         localStorage.removeItem("exam")
         router.push({name:'Login'})
         location.reload()
                
     } else {
-        console.log("_____________")
+        
         return Promise.reject(error);
     }
 })
