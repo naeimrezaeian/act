@@ -1,89 +1,73 @@
 <template>
 <div>
-  <video ref="videoRec"  autoplay class="webcam" ></video>
+  <p>Test Page</p>
+
+  <div class="audio-vopros">
+                <button type="button"  class="btn"  @click="getAudio()"><p>ПРОСЛУШАТЬ ВОПРОС</p>
+                </button>
+  </div>
+<br/><br/>
 </div>
 </template>
   
 <script>
-import axios from "axios"
-  export default {
-    data(){
-            return {
-               
-                recorder: null, 
-                stream: null,
-                recordedChunks :[],
-               
-            }
-        },
-    methods:{
- init(){
-                
-                if ('mediaDevices' in navigator && 'getUserMedia' in navigator.mediaDevices){
-                    navigator.mediaDevices.getUserMedia({
-                     video: {
-                        width: { ideal: 640 },
-                        height: { ideal: 480 }
-                     },
-                     audio: false
-                    }).then(  mediaStream=>{
-                        
-                      this.stream=mediaStream;
-                        this.recorder = new MediaRecorder(mediaStream, {
-                          mimeType: "video/webm; codecs=vp9",
-                            audioBitsPerSecond: 128000
-                        });
-                      
-                       this.recorder.ondataavailable =  (event) => { 
-                        
-                       // const r=event.data.text()
-                      //var blob = new Blob(event.data, { 'type' : 'video/webm; codecs=vp9' });
-                      const file = new File ([event.data],"test"+new Date().getTime()+".webm",{type:'video/webm; codecs=vp9',lastModified:new Date().getTime()})
-
-                      const formData = new FormData();
-                      formData.append("file", file);
-                          const headers = {  'Content-Type': 'multipart/form-data'}
-                           axios.post("upload",formData,{headers:headers}).then(res=>{
-                            console.log(res.data)
-                           })
-                        
-                        
-                        
-                        
-                        this.recordedChunks.push(event.data); 
-                        };
-                        this.recorder.start(6000);
-                        
-                       
-                       this.$refs.videoRec.src = null;
-                       this.$refs.videoRec.srcObject = mediaStream;
-                      
-                        
-                    })
-                    .catch(() => (
-                        console.log("Error media ")
-                       
-                        ));
-
-                            
-                      
-                }
-
+import httpClient from '@/httpClient';
+export default {
+  name:"Test",
+  data (){
+    return {
+      fileId:"3ff008c9-88ff-4df0-be69-56d8803cf160",
+      accessCode:null
 
     }
-},beforeMount(){
-           
-           this.init();         
-        }
-                
+  },
+  components: {
+  
+
+  },
+  methods: { 
+
+    async getAudio(){
+      console.log("Play file")
+
+      var audio = new Audio("uploads/m1.mp3")
+        audio.play()
+    //  const responseFile = await httpClient.get('/api/files/DownloadFile/' + this.fileId+"/"+this.accessCode)
+      //var blob = new Blob(responseFile.data)
+      //var mp3 = new Blob([responseFile.data], { type: 'application/octet-stream' })
+      //var url = (window.URL || window.webkitURL).createObjectURL( mp3 );
+     
+   //   var reader = new FileReader();
+    //  reader.readAsDataURL(mp3);
+
+      //reader.onload = function() {
+       
+
+//};
+               
+    }
+   
+  },
+  async created() {
+console.log("create")
+
+const responseAccess = await httpClient.get('/api/files/DownloadFile/GetFileAccessCode/' + this.fileId,{showLoader:false})
+if (responseAccess!=null){
+  this.accessCode=responseAccess.data.result.accessCode
+  console.log(this.accessCode)
+}else{
+  console.log("get error")
+}
+
+
+
+
   }
+}
+
 </script>
 
 <style scoped>
-.webcam{
-  width: 320px;
-  height: 240px;
-  background-color: red;
-}
+
 
 </style>

@@ -1,7 +1,7 @@
 <template>
     <div class="title">{{CurrentTitle}}</div>
             <div class="audio-vopros">
-                <button type="button"  class="btn" v-bind:class="{btn_play:this.AudioBtn}" @click="playAudio()">
+                <button type="button"  class="btn" v-bind:class="{btn_play:this.AudioBtn}" @click="getAudio()">
                 <p>ПРОСЛУШАТЬ ВОПРОС</p>                
                 
                 </button>
@@ -76,8 +76,13 @@ import {mapActions,mapGetters} from 'vuex'
         },        
         
         methods:{
-            ...mapActions(['sendAnswer']),
+            ...mapActions(['sendAnswer','GetFileAccessToken']),
             isAnswer(id){           return this.answersList.includes(id) },
+            getAudio(){
+                console.log("Get Audio")
+                this.GetFileAccessToken(this.CurrentAudioFile)
+
+            },
             playAudio(){
                 console.log("play "+this.CurrentAudioFile)
                 this.AudioBtn=!this.AudioBtn

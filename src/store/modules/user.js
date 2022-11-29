@@ -1,4 +1,5 @@
 import httpClient from '@/httpClient';
+import { createStructuralDirectiveTransform } from '@vue/compiler-core';
 import router from '../../router'
 export default {
     state: {
@@ -13,7 +14,7 @@ export default {
             try {
                 var response = await httpClient.post('api/auth/user/login', { username: user.login, password: user.password })
                 if (response.data && response.data.success === true) {
-
+                    
                     localStorage.removeItem("token")
                     localStorage.removeItem("exam")
                     localStorage.setItem('token', response.data.result.token);
@@ -31,7 +32,7 @@ export default {
                         router.push("/exam");
                         return
                     }
-                    console.log(currentState);
+                    
                     router.push("/level");
 
                 } else {
@@ -67,7 +68,9 @@ export default {
             }
         },
         setCurrentSubtest({ commit }, data) {
+            console.log("set current")
             const exam = JSON.parse(localStorage.getItem("exam"))
+            console.log(exam)
             localStorage.removeItem('exam')
             exam.currentState.moduleId = data.moduleId
             exam.currentState.subtestId = data.subtestId
@@ -75,15 +78,24 @@ export default {
              commit("updateCurrentSubtest", data)
         },
         async getCurrentState({commit}) {
+           console.log("get")
             
             try {
                 const response = await httpClient.get('api/userexam/UserExamCurrentState')
+               
                 if (response.data && response.data.success) {
+                   
                     const exam = JSON.parse(localStorage.getItem("exam"))
+                    
+                    
                     localStorage.removeItem('exam')
-                    exam.currentState=response.data.result
+                    exam.currentState=response.data.result.currentState
+                    exam.modules=response.data.result.modules
+                   
                     localStorage.setItem("exam", JSON.stringify(exam))
-                                       commit("updateCurrentSubtest", {moduleId:exam.currentState.moduleId,subtestId:exam.currentState.subtestId})
+                   
+
+                    commit("updateCurrentSubtest", {moduleId:exam.currentState.moduleId,subtestId:exam.currentState.subtestId})
                 }
             } catch (error) {
                 console.log(error)

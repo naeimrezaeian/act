@@ -4,10 +4,41 @@ import router from '../../router'
 export default {
     state: {
         questionsList: [],
-        currentPointer: null
+        currentPointer: null,
+        currentFileAccessToken:null,
+        currentFiileLimit:null,
+        currentFileListen:null
 
     },
     actions: {
+        async GetFileAccessToken({commit},fileId){
+            console.log("GetAccessToken")
+
+           /* {
+                "success": true,
+                "result": {
+                    "fileId": "3ff008c9-88ff-4df0-be69-56d8803cf160",
+                    "accessCode": 739308630,
+                    "listenLimitCount": 3,
+                    "listenCount": 1
+                }
+            }
+            */
+
+            const responseAccess = await httpClient.get('/api/files/DownloadFile/GetFileAccessCode/' + fileId,{showLoader:false})
+            
+            
+            if (responseAccess.data && responseAccess.data.success === true) {
+
+                //const responseFile = await httpClient.get('/api/files/DownloadFile/' + fileId+"/"+responseAccess.data.result.accessCode)
+               
+                commit('updateAccessToken',responseAccess.data.result)
+
+
+            }
+
+
+        },
         async subtestQuestions({ commit }, subtest) {
             
             if (subtest!=null){
@@ -51,9 +82,14 @@ export default {
         }
     },
     mutations: {
+        updateAccessToken(state,data){
+            state.currentFileAccessToken=data.accessCode
+            state.currentFileListen=data.listenCount
+            state.currentFiileLimit=data.listenLimitCount
+        },
         updateQuestions(state, data) {
             //new code
-          console.log(data)
+         
             let res=[]
             data.map(items =>{items.questionTexts.map(i =>{return i}).map(j => {res.push(Object.assign({},
             {"type":items.type,"desc":items.desc,"status":items.status,"listenLimitCount":items.listenLimitCount,"fileId":items.fileId},
@@ -61,7 +97,7 @@ export default {
             })
             //
             //state.questionsList = data
-            console.log(res)
+           
             state.questionsList=res
 
 
@@ -73,8 +109,7 @@ export default {
     },
     getters: {
         allQuestions: (state) =>() =>{
-            //console.log("allq")
-            //console.log(state.questionsList)
+            
             return state.questionsList
            
         },
@@ -85,12 +120,12 @@ export default {
         getNextQuestion: (state) => {
           
             const index = state.questionsList.indexOf(state.questionsList.filter(question => question.id === state.currentPointer)[0])
-            console.log("Index")
-            console.log(index)
+            
              if (index >= state.questionsList.length-1) return null
-             console.log(state.questionsList[index+1])
+            
             return state.questionsList[index+1]
-        }
+        },
+        GetFileAccessToken:(state)=>() => { return statusbar.currentFileAccessToken}
     }
     
 }

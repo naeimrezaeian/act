@@ -139,8 +139,7 @@ export default {
       this.$refs.camera.stopRecord()
       await this.finishExam(this.currentSubtestId)
       this.setTime(0)
-      //this.$refs.camera.download()
-      //this.$refs.camera.stopRecord()
+      
       //this.isDisabledValue=true
     }
 
@@ -168,7 +167,10 @@ export default {
         case 'updateTimeleft':
           this.timerFinish = this.$store.state.timer.timerFinish
           if (this.timerFinish) {
-                   await this.finishExam(this.currentSubtestId)
+            console.log("finish time")
+            this.$refs.camera.stopRecord()
+            console.log(this.$refs.camera)
+            await this.finishExam(this.currentSubtestId)
           }
           break
         case 'updateSendAnswer':

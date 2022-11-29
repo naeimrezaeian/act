@@ -29,6 +29,7 @@ requestFetch.interceptors.response.use((response)=>{
         location.reload()
                
     } else {
+        console.log("_____________")
         return Promise.reject(error);
     }
 })

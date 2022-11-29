@@ -5,6 +5,7 @@ import  ACTlevel from './components/Level.vue'
 import  ACTmodule from './components/Module.vue'
 import  ACTexam from './components/Exam.vue'
 import  ACTfinish from './components/FinishExam.vue'
+import test from './components/NaeimTest2.vue'
 
 const checkLocalStorage=(to,from,next)=>{
   if (localStorage.getItem("exam")===null){
@@ -17,24 +18,43 @@ const checkLocalStorage=(to,from,next)=>{
 
 
 const checkLogin=(to,from,next) =>{
+
+  if (!localStorage.getItem("exam")){
+    console.log("Exam not found")
+   localStorage.removeItem('token')
+    //next({name:'Login'}) 
+  }
   
   if (to.meta.requiresVisitor   || !localStorage.getItem("token")){
     if (to.fullPath==="/"){ next() }else{ next({name:'Login'})  }
   }else{
     var data=JSON.parse(localStorage.getItem("exam"))
- var currentState=data.currentState
-  if(currentState.start===null){   
-console.log(to.fullPath)
-   if (currentState.moduleId===null && to.fullPath!="/module"){
-    if (to.fullPath==="/level"){ next() }else{ next({name:'Level'})  }
-  }else{
-    
-    if (to.fullPath==="/module"){ next() }else{ next({name:'Module'})  }
-  }
+    console.log(data)
+    let currentState={}
+    if (data===null){
+       
+       
 
-   }else{
-    next({name:'Exam'})
-   }
+    }else{
+      currentState=data.currentState 
+
+      if(currentState.start===null){   
+
+        if (currentState.moduleId===null && to.fullPath!="/module"){
+         if (to.fullPath==="/level"){ next() }else{ next({name:'Level'})  }
+       }else{
+         
+         if (to.fullPath==="/module"){ next() }else{ next({name:'Module'})  }
+       }
+     
+        }else{
+         next({name:'Exam'})
+        }
+
+    }
+
+ 
+
 }
 
 }
@@ -76,7 +96,11 @@ const routes = [
     component: ACTfinish,
   },
   
-  
+  {
+path:"/test",
+name:"test",
+component:test
+  },
   
 ];
 

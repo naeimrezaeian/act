@@ -5,7 +5,7 @@ import App from './App.vue'
 import router from './router';
 import './axios'
 //import axiosinstance from './axiosinstance'
-console.log("main")
+
 
 socketHub.client.on("multipleConnections",function(){
     console.log("Multiple logins deteced")

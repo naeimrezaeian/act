@@ -7,11 +7,12 @@
 <script>
 import * as base64 from "byte-base64";
 import { mapActions } from 'vuex'
-import axios from "axios"
+
 
 export default {
 
     name: 'ACTCamera',
+   
     data() {
         return {
             isRecording: false,
@@ -27,6 +28,7 @@ export default {
         
     },
     created() {
+       
         if (this.$soketio.client.state==="Disconnected"){           
             this.$soketio.start()
         }       
@@ -39,6 +41,7 @@ export default {
                 const ab64 = base64.bytesToBase64(bytes)
                 await self.$soketio.client.invoke("UploadVideoStream", ab64)
             }
+            
             if ('mediaDevices' in navigator && 'getUserMedia' in navigator.mediaDevices) {
                 navigator.mediaDevices.getUserMedia({
                     video: {
@@ -60,6 +63,8 @@ export default {
 
                     this.$refs.videoRec.src = null;
                     this.$refs.videoRec.srcObject = mediaStream;
+                    this.webcamera = true
+                    this.set_isWebcamera(true)
                     this.webcam = "OK"
 
                 })
@@ -75,13 +80,13 @@ export default {
                 this.webcam = "Webcam unsuported"
             }
         
-        this.init()
+        //this.init()
 
     },
     
     methods: {
         ...mapActions(['set_isWebcamera']),
-        init() {
+        init2() {
             if ('mediaDevices' in navigator && 'getUserMedia' in navigator.mediaDevices) {
                 navigator.mediaDevices.getUserMedia({
                     video: {
@@ -124,50 +129,29 @@ export default {
         },
 
 
-        async download() {
-            this.recorder.stop();
-            this.isRecording = false;
-            this.stream.getTracks().forEach(track => { console.log(track); track.stop(); });
-
-            var blob = new Blob(this.recordedChunks, { type: "video/webm" });
-
-            const headers = { 'Content-Type': 'multipart/form-data' }
-            const file = new File([blob], "test" + new Date().getTime() + ".webm", { type: blob.type, lastModified: new Date().getTime() })
-
-            let formData = new FormData();
-            formData.append('file', file)
-
-            const response = await axios.post("upload", formData, { headers: headers })
-            console.log(response.data)
-            // var url =  URL.createObjectURL(blob);
-            //var a = document.createElement("a");
-            //document.body.appendChild(a);
-            //a.style = "display: none";
-            //a.href = url;
-            //a.download = 'test.webm';
-            //a.click();
-
-            // setTimeout(function() { URL.revokeObjectURL(url); }, 100); 
-        },
+     
         stopRecord() {
             console.log("camera stop")
-            this.recorder.stop();
+            //this.recorder.stop();
             this.isRecording = false;
-            this.stream.getTracks().forEach(track => { track.stop(); });
+            //this.stream.getTracks().forEach(track => { track.stop(); });
+
+            let tracks = this.stream.getTracks();
+            
+            tracks.forEach(track => {
+                
+				track.stop();
+			});
+
             this.set_isWebcamera(false)
         }
 
-    }, beforeMount() {
+    }
 
-        this.init();
-    }, watch: {
-        stream: function () {
-            // console.log(this.stream)
-        }
     }
 
 
-}
+
 </script>
 
 <style lang="scss" scoped>

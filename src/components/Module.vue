@@ -40,13 +40,17 @@ export default {
        
         await this.getCurrentState()
        
-       
+        console.log("model get current ")
+
+        console.log(JSON.parse(localStorage.getItem("exam")))
             const currentmoudle = JSON.parse(localStorage.getItem("exam")).modules.map(
                 function (e) {
                     const subtest = e.subtests.filter(i => i.status === 'active')
                     return subtest.length ? { module: e, subtest: subtest[0] } : null
                 }
             ).filter(item => item)[0]
+
+            
             if (currentmoudle) {
             
             await this.setCurrentSubtest({ moduleId: currentmoudle.module.id, subtestId: currentmoudle.subtest.subtest.id })
