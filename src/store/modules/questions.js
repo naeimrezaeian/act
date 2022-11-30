@@ -6,12 +6,14 @@ export default {
         questionsList: [],
         currentPointer: null,
         currentFileAccessToken:null,
-        currentFiileLimit:null,
+        currentFileLimit:null,
         currentFileListen:null
 
     },
     actions: {
-        async GetFileAccessToken({commit},fileId){
+
+        
+        async FileAccessToken({commit},fileId){
             console.log("GetAccessToken")
 
            /* {
@@ -83,9 +85,10 @@ export default {
     },
     mutations: {
         updateAccessToken(state,data){
+            console.log(data)
             state.currentFileAccessToken=data.accessCode
             state.currentFileListen=data.listenCount
-            state.currentFiileLimit=data.listenLimitCount
+            state.currentFileLimit=data.listenLimitCount
         },
         updateQuestions(state, data) {
             //new code
@@ -125,7 +128,10 @@ export default {
             
             return state.questionsList[index+1]
         },
-        GetFileAccessToken:(state)=>() => { return statusbar.currentFileAccessToken}
+        GetFileAccessToken:(state)=>() => { return state.currentFileAccessToken},
+        GetFileLimit:(state)=>() => { return state.currentFileLimit},
+        GetFileListen:(state)=>() => { return state.currentFileListen},
+
     }
     
 }

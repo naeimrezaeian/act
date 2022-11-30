@@ -80,62 +80,15 @@ export default {
                 this.webcam = "Webcam unsuported"
             }
         
-        //this.init()
+       
 
     },
     
     methods: {
         ...mapActions(['set_isWebcamera']),
-        init2() {
-            if ('mediaDevices' in navigator && 'getUserMedia' in navigator.mediaDevices) {
-                navigator.mediaDevices.getUserMedia({
-                    video: {
-                        width: { ideal: 640 },
-                        height: { ideal: 480 }
-                    },
-                    audio: false
-                }).then(mediaStream => {
-
-                    this.stream = mediaStream;
-                    this.recorder = new MediaRecorder(mediaStream, {
-                        mimeType: "video/webm; codecs=vp9",
-                        audioBitsPerSecond: 128000
-                    });
-
-                    this.recorder.ondataavailable = (event) => { 
-                        
-                        this.recordedChunks.push(event.data); 
-                    };
-                    this.recorder.start(100);
-
-
-                    this.$refs.videoRec.src = null;
-                    this.$refs.videoRec.srcObject = mediaStream;
-                    this.webcamera = true
-                    this.set_isWebcamera(true)
-
-                })
-                    .catch(() => (
-                        console.log("Error media ")
-
-                    ));
-
-
-
-            } else {
-                alert("can not get media devicess")
-            }
-
-        },
-
-
-     
         stopRecord() {
-            console.log("camera stop")
-            //this.recorder.stop();
-            this.isRecording = false;
-            //this.stream.getTracks().forEach(track => { track.stop(); });
-
+            console.log("camera stop")           
+            this.isRecording = false;            
             let tracks = this.stream.getTracks();
             
             tracks.forEach(track => {

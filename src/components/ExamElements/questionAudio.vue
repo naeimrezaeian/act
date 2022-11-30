@@ -5,7 +5,7 @@
                 <p>ПРОСЛУШАТЬ ВОПРОС</p>                
                 
                 </button>
-                <span>Осталось прослушиваний: {{CurrentAudioLimit}}</span>
+                <span>Осталось прослушиваний: {{CurrentFileLimit-CurrentFileListen}}</span>
             </div>
                 <div class="text">{{CurrentQuestion}} </div>                
             <div class="opros">
@@ -19,11 +19,16 @@
 
 <script>
 import {mapActions,mapGetters} from 'vuex'
+import httpClient from '@/httpClient';
   export default {
         name:"questionAudio",
         data(){
             return {
-                AudioBtn:false
+                AudioBtn:false,
+                audio: new Audio(),
+                CurrentFileAccessToken:null,
+                CurrentFileLimit:null,
+                CurrentFileListen:null
             }
         },
         
@@ -64,7 +69,7 @@ import {mapActions,mapGetters} from 'vuex'
 
         },
         computed:{
-            ...mapGetters(['getCurrentPointer','getNextQuestion','selectedAnswers']),
+            ...mapGetters(['getCurrentPointer','getNextQuestion','selectedAnswers','GetFileAccessToken','GetFileLimit','GetFileListen']),
             answersList(){
             if(this.selectedAnswers[0]){
           return  this.selectedAnswers[0].map(item => item.answerId)
@@ -76,11 +81,29 @@ import {mapActions,mapGetters} from 'vuex'
         },        
         
         methods:{
-            ...mapActions(['sendAnswer','GetFileAccessToken']),
+            ...mapActions(['sendAnswer','FileAccessToken']),
             isAnswer(id){           return this.answersList.includes(id) },
-            getAudio(){
+            async getAudio(){
                 console.log("Get Audio")
-                this.GetFileAccessToken(this.CurrentAudioFile)
+                //
+                await this.FileAccessToken(this.CurrentAudioFile)
+
+                this.CurrentFileAccessToken=this.GetFileAccessToken()
+                this.CurrentFileLimit=this.GetFileLimit()
+                this.CurrentFileListen=this.GetFileListen()
+                
+                var reader = new FileReader();
+                const responseFile = await httpClient.get('/api/files/DownloadFile/' + this.CurrentAudioFile+"/"+this.CurrentFileAccessToken,{ responseType: 'blob',showLoader:false })
+                reader.readAsBinaryString(responseFile.data);
+
+                reader.onload = function(){
+                
+                    var arrayBuffer = reader.result;
+                    var base64str = btoa( arrayBuffer);
+                    this.audio.src="data:audio/wav;base64,"+base64str
+                    this.audio.play()
+                }.bind(this)
+
 
             },
             playAudio(){
