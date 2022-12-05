@@ -21,6 +21,7 @@ requestFetch.interceptors.response.use((response)=>{
         return Promise.reject(response)
     }
 },(error)=>{
+    console.log(error)
     if (401 === error.response.status) {        
         localStorage.removeItem("token")
         localStorage.removeItem("exam")

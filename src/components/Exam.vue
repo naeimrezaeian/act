@@ -20,7 +20,8 @@
         <questionAudio v-if="CurrentQuestionType === 'audio'" :CurrentTitle="this.CurrentTitle"
           :CurrentQuestion="this.CurrentQuestion" :CurrentAnswers="this.CurrentAnswers"
           :CurrentAudioFile="this.CurrentFile" :CurrentAudioLimit="this.CurrentLimit"
-          :SelectedAnswers="this.SelectedAnswers" :CurrentQuestionId="this.CurrentQuestionId" :CurrentId="this.CurrentId"/>
+          :SelectedAnswers="this.SelectedAnswers" :CurrentQuestionId="this.CurrentQuestionId" 
+          :CurrentId="this.CurrentId" :CurrentListen="this.CurrentListen"/>
 
         <questionVideo v-if="CurrentQuestionType === 'video'" :CurrentTitle="this.CurrentTitle"
           :CurrentQuestion="this.CurrentQuestion" :CurrentAnswers="this.CurrentAnswers"
@@ -75,7 +76,7 @@ export default {
    
     ...mapGetters(['currentSubtestMaxTime', 'currentSubtestId', 'currentSubtestRecord',
       'currentSubtestMaxScore', "allQuestions", "getQuestion", 'isWebcamera',
-      'getCurrentPointer', 'selectedAnswers', 'currentStateData', 'getNextQuestion']),
+      'getCurrentPointer', 'selectedAnswers', 'currentStateData', 'getNextQuestion','GetFileAccessToken']),
     isDisabled() {
       return this.isDisabledValue
     },
@@ -93,7 +94,8 @@ export default {
       CurrentQuestionType: '',
       CurrentAnswers: [],
       CureentFile: '',
-      CurrentLimit: 0,    
+      CurrentLimit: 0,
+      CurrentListen: 0,      
       CurrentPointer: 0,
       SelectedAnswers: [],
       LastQuestion: false,
@@ -119,8 +121,9 @@ export default {
       this.CurrentAnswers = this.getQuestion(this.getCurrentPointer).answers
       this.CurrentFile = this.getQuestion(this.getCurrentPointer).fileId || ''      
       this.CurrentLimit = this.getQuestion(this.getCurrentPointer).listenLimitCount || 0 
+      //this.CurrentListen=this.getQuestion(this.getCurrentPointer).listenCount || 0
       this.CurrentTitle = this.getQuestion(this.getCurrentPointer).desc
-      
+      console.log(this.CurrentLimit,this.CurrentListen )
       if (this.getNextQuestion) {
          this.LastQuestion = false
       } else {
@@ -151,11 +154,12 @@ export default {
     await this.getAnswers(this.currentSubtestId)
     await this.subtestQuestions(this.currentSubtestId)
     this.updateQuestionPointer(this.currentStateData.questionId)
-    this.updateQuestion();
-   // console.log("time:"+this.currentSubtestMaxTime())
-   this.setTime(this.currentStateData.start ?? this.currentSubtestMaxTime())
-    // this.setTime(this.currentStateData.start ?? 20)
-      //this.setTime(100 ?? 100)
+    this.updateQuestion();   
+    this.setTime(this.currentStateData.start ?? this.currentSubtestMaxTime())
+    
+    //await this.FileAccessToken(this.CurrentFile)
+    //this.CurrentListen=this.GetFileAccessToken()
+
   },
   mounted() {
     // this.Webcamera=this.$refs.camera.webcamera
