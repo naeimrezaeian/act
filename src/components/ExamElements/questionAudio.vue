@@ -54,6 +54,10 @@ import httpClient from '@/httpClient';
                     type:Number,
                     require:true
             },
+            CurrentListen:{
+                type:Number,
+                require:true  
+            },
             SelectedAnswers:{
                 type:Object,
                 require:true
@@ -78,7 +82,15 @@ import httpClient from '@/httpClient';
             }
         }
           
-        },        
+        },   
+       async  created(){
+        
+        await this.FileAccessToken(this.CurrentAudioFile)
+        this.CurrentFileLimit=this.GetFileLimit()
+        this.CurrentFileListen=this.GetFileListen()
+        this.CurrentFileAccessToken =this.GetFileAccessToken()
+
+        }   ,  
         
         methods:{
             ...mapActions(['sendAnswer','FileAccessToken']),
@@ -86,11 +98,13 @@ import httpClient from '@/httpClient';
             async getAudio(){
                 console.log("Get Audio")
                 //
-                await this.FileAccessToken(this.CurrentAudioFile)
-
+               
+                if (this.CurrentFileAccessTok===null){
                 this.CurrentFileAccessToken=this.GetFileAccessToken()
                 this.CurrentFileLimit=this.GetFileLimit()
                 this.CurrentFileListen=this.GetFileListen()
+                }
+                if (this.CurrentFileLimit-this.CurrentFileListen>=1){
                 
                 var reader = new FileReader();
                 const responseFile = await httpClient.get('/api/files/DownloadFile/' + this.CurrentAudioFile+"/"+this.CurrentFileAccessToken,{ responseType: 'blob',showLoader:false })
@@ -103,7 +117,10 @@ import httpClient from '@/httpClient';
                     this.audio.src="data:audio/wav;base64,"+base64str
                     this.audio.play()
                 }.bind(this)
-
+            }else{
+                console.log("file audio error")
+            }
+            }
 
             },
             playAudio(){
