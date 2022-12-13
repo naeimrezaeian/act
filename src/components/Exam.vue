@@ -19,9 +19,9 @@
 
         <questionAudio v-if="CurrentQuestionType === 'audio'" :CurrentTitle="this.CurrentTitle"
           :CurrentQuestion="this.CurrentQuestion" :CurrentAnswers="this.CurrentAnswers"
-          :CurrentAudioFile="this.CurrentFile" :CurrentAudioLimit="this.CurrentLimit"
+          :CurrentAudioFile="this.CurrentFile" :CurrentAudioLimit="this.CurrentLimit" :CurrentListen="this.CurrentListen" :CurrentToken="this.CurrentToken"
           :SelectedAnswers="this.SelectedAnswers" :CurrentQuestionId="this.CurrentQuestionId" 
-          :CurrentId="this.CurrentId" :CurrentListen="this.CurrentListen"/>
+          :CurrentId="this.CurrentId" />
 
         <questionVideo v-if="CurrentQuestionType === 'video'" :CurrentTitle="this.CurrentTitle"
           :CurrentQuestion="this.CurrentQuestion" :CurrentAnswers="this.CurrentAnswers"
@@ -76,12 +76,12 @@ export default {
    
     ...mapGetters(['currentSubtestMaxTime', 'currentSubtestId', 'currentSubtestRecord',
       'currentSubtestMaxScore', "allQuestions", "getQuestion", 'isWebcamera',
-      'getCurrentPointer', 'selectedAnswers', 'currentStateData', 'getNextQuestion','GetFileAccessToken']),
+      'getCurrentPointer', 'selectedAnswers', 'currentStateData', 'getNextQuestion'
+      ,'GetFileAccessToken','GetFileLimit','GetFileListen']),
     isDisabled() {
       return this.isDisabledValue
     },
-    isWebcamera2() {
-      //console.log(this.$refs)
+    isWebcamera2() {      
       return this.isWebcamera
     }
 
@@ -93,9 +93,10 @@ export default {
       CurrentTitle: '',
       CurrentQuestionType: '',
       CurrentAnswers: [],
-      CureentFile: '',
+      CurrentFile: '',
       CurrentLimit: 0,
-      CurrentListen: 0,      
+      CurrentListen: 0,  
+      CurrentToken:null,    
       CurrentPointer: 0,
       SelectedAnswers: [],
       LastQuestion: false,
@@ -109,27 +110,30 @@ export default {
     }
   },
   methods: {
-    ...mapActions(['subtestQuestions', 'setTime', 'updateQuestionPointer', 'finishExam','getCurrentState','getAnswers']),
+    ...mapActions(['subtestQuestions', 'setTime', 'updateQuestionPointer', 'finishExam','getCurrentState','getAnswers','FileAccessToken']),
 
-    updateQuestion() {
+    async updateQuestion() {
      
       if(this.getCurrentPointer !=null){
+        
+
       this.CurrentQuestionId = this.getQuestion(this.getCurrentPointer).questionId
       this.CurrentId = this.getQuestion(this.getCurrentPointer).id
       this.CurrentQuestion = this.getQuestion(this.getCurrentPointer).question
       this.CurrentQuestionType = this.getQuestion(this.getCurrentPointer).type
       this.CurrentAnswers = this.getQuestion(this.getCurrentPointer).answers
-      this.CurrentFile = this.getQuestion(this.getCurrentPointer).fileId || ''      
-      this.CurrentLimit = this.getQuestion(this.getCurrentPointer).listenLimitCount || 0 
-      //this.CurrentListen=this.getQuestion(this.getCurrentPointer).listenCount || 0
-      this.CurrentTitle = this.getQuestion(this.getCurrentPointer).desc
-      console.log(this.CurrentLimit,this.CurrentListen )
-      if (this.getNextQuestion) {
-         this.LastQuestion = false
-      } else {
-        this.LastQuestion = true
-      }
-      //console.log( "refs: ",this.$refs)
+      this.CurrentFile = this.getQuestion(this.getCurrentPointer).fileId || ''  
+      this.CurrentTitle = this.getQuestion(this.getCurrentPointer).desc     
+
+      if (this.getNextQuestion) {         this.LastQuestion = false      } else {        this.LastQuestion = true      }
+      if (this.CurrentQuestionType === 'audio'){
+        await this.FileAccessToken(this.CurrentFile)
+        this.CurrentLimit=this.GetFileLimit()
+        this.CurrentListen=this.GetFileListen()
+        this.CurrentToken = this.GetFileAccessToken()
+        
+        }
+      
       }
     },
     pointerclick(index) {
@@ -156,9 +160,14 @@ export default {
     this.updateQuestionPointer(this.currentStateData.questionId)
     this.updateQuestion();   
     this.setTime(this.currentStateData.start ?? this.currentSubtestMaxTime())
-    
-    //await this.FileAccessToken(this.CurrentFile)
-    //this.CurrentListen=this.GetFileAccessToken()
+    if (this.CurrentQuestionType === 'audio'){
+        await this.FileAccessToken(this.CurrentFile)
+        this.CurrentLimit=this.GetFileLimit()
+        this.CurrentListen=this.GetFileListen()
+        this.CurrentToken = this.GetFileAccessToken()
+        console.log(this.CurrentToken)
+        }
+   
 
   },
   mounted() {

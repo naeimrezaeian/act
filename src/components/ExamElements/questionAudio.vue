@@ -5,7 +5,7 @@
                 <p>ПРОСЛУШАТЬ ВОПРОС</p>                
                 
                 </button>
-                <span>Осталось прослушиваний: {{CurrentFileLimit-CurrentFileListen}}</span>
+                <span>Осталось прослушиваний: {{(this.Limit)}}</span>
             </div>
                 <div class="text">{{CurrentQuestion}} </div>                
             <div class="opros">
@@ -20,15 +20,15 @@
 <script>
 import {mapActions,mapGetters} from 'vuex'
 import httpClient from '@/httpClient';
+
   export default {
         name:"questionAudio",
         data(){
             return {
                 AudioBtn:false,
                 audio: new Audio(),
-                CurrentFileAccessToken:null,
-                CurrentFileLimit:null,
-                CurrentFileListen:null
+                Limit:0,
+                Listen:0              
             }
         },
         
@@ -58,6 +58,10 @@ import httpClient from '@/httpClient';
                 type:Number,
                 require:true  
             },
+            CurrentToken:{
+                type:String,
+                require:true
+            },
             SelectedAnswers:{
                 type:Object,
                 require:true
@@ -83,35 +87,23 @@ import httpClient from '@/httpClient';
         }
           
         },   
-       async  created(){
-        
-        await this.FileAccessToken(this.CurrentAudioFile)
-        this.CurrentFileLimit=this.GetFileLimit()
-        this.CurrentFileListen=this.GetFileListen()
-        this.CurrentFileAccessToken =this.GetFileAccessToken()
+         
 
-        }   ,  
-        
         methods:{
             ...mapActions(['sendAnswer','FileAccessToken']),
             isAnswer(id){           return this.answersList.includes(id) },
             async getAudio(){
+                this.AudioBtn=!this.AudioBtn
                 console.log("Get Audio")
-                //
-               
-                if (this.CurrentFileAccessTok===null){
-                this.CurrentFileAccessToken=this.GetFileAccessToken()
-                this.CurrentFileLimit=this.GetFileLimit()
-                this.CurrentFileListen=this.GetFileListen()
-                }
-                if (this.CurrentFileLimit-this.CurrentFileListen>=1){
+               //this.Limit=this.CurrentAudioLimit-this.CurrentListen
+             
+                if (this.CurrentAudioLimit-this.CurrentListen>=1){
                 
                 var reader = new FileReader();
-                const responseFile = await httpClient.get('/api/files/DownloadFile/' + this.CurrentAudioFile+"/"+this.CurrentFileAccessToken,{ responseType: 'blob',showLoader:false })
+                const responseFile = await httpClient.get('/api/files/DownloadFile/' + this.CurrentAudioFile+"/"+this.CurrentToken,{ responseType: 'blob',showLoader:false })
                 reader.readAsBinaryString(responseFile.data);
-
-                reader.onload = function(){
-                
+                reader.onload = function(){ 
+                    
                     var arrayBuffer = reader.result;
                     var base64str = btoa( arrayBuffer);
                     this.audio.src="data:audio/wav;base64,"+base64str
@@ -120,25 +112,26 @@ import httpClient from '@/httpClient';
             }else{
                 console.log("file audio error")
             }
+            },
+            init(){
+                console.log("init")
+                console.log(this.CurrentAudioLimit)
+                this.Limit=this.CurrentAudioLimit
+                this.Listen=this.CurrentListen
+                this.Limit=this.CurrentAudioLimit-this.CurrentListen
+
+
             }
 
-            },
-            playAudio(){
-                console.log("play "+this.CurrentAudioFile)
-                this.AudioBtn=!this.AudioBtn
-                var audio = new Audio("uploads/"+this.CurrentAudioFile)
-               let that = this
-              audio.ontimeupdate = function () { 
-                //console.log( audio.currentTime.toFixed()+" "+audio.duration)
-                if (audio.currentTime === audio.duration ){                  
-                  that.AudioBtn=!that.AudioBtn
-                  console.log("audio finish") 
-                }
-              }
-               audio.play()
-                
-                
             }
+            ,
+            watch:{
+                CurrentListen(new_value,old_value){
+                    console.log(new_value+" "+old_value)
+                    this.init()
+                }
+            }
+
         }
     
     

@@ -107,7 +107,7 @@ export default {
            
         },
         getQuestion: (state) => (pointer) =>{
-            console.log(state.questionsList)
+         //   console.log(state.questionsList)
             return state.questionsList.filter(question => question.id === pointer)[0]},
         getCurrentPointer: (state) => state.currentPointer,
         getNextQuestion: (state) => {
