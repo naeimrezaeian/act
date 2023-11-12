@@ -15,12 +15,13 @@
           :CurrentSubtestId="this.currentSubtestId" />
 
         <questionLetter v-if="CurrentQuestionType === 'letter'" :CurrentTitle="this.CurrentTitle"
-          :CurrentQuestion="this.CurrentQuestion" />
+          :CurrentQuestion="this.CurrentQuestion" :CurrentSubtestId="this.currentSubtestId" />
 
         <questionAudio v-if="CurrentQuestionType === 'audio'" :CurrentTitle="this.CurrentTitle"
           :CurrentQuestion="this.CurrentQuestion" :CurrentAnswers="this.CurrentAnswers"
-          :CurrentAudioFile="this.CurrentFile" :CurrentAudioLimit="this.CurrentLimit"
-          :SelectedAnswers="this.SelectedAnswers" :CurrentQuestionId="this.CurrentQuestionId" :CurrentId="this.CurrentId"
+          :CurrentAudioFile="this.CurrentFile" :CurrentAudioLimit="this.CurrentLimit" :CurrentListen="this.CurrentListen"
+          :CurrentToken="this.CurrentToken" :SelectedAnswers="this.SelectedAnswers"
+          :CurrentQuestionId="this.CurrentQuestionId" :CurrentId="this.CurrentId"
           :CurrentSubtestId="this.currentSubtestId" />
 
         <questionVideo v-if="CurrentQuestionType === 'video'" :CurrentTitle="this.CurrentTitle"
@@ -77,12 +78,12 @@ export default {
 
     ...mapGetters(['currentSubtestMaxTime', 'currentSubtestId', 'currentSubtestRecord',
       'currentSubtestMaxScore', "allQuestions", "getQuestion", 'isWebcamera',
-      'getCurrentPointer', 'selectedAnswers', 'currentStateData', 'getNextQuestion']),
+      'getCurrentPointer', 'selectedAnswers', 'currentStateData', 'getNextQuestion'
+      , 'GetFileAccessToken', 'GetFileLimit', 'GetFileListen']),
     isDisabled() {
       return this.isDisabledValue
     },
     isWebcamera2() {
-      //console.log(this.$refs)
       return this.isWebcamera
     }
 

@@ -79,7 +79,7 @@ export default {
     computed: {
         ...mapGetters(['getCurrentPointer', 'getNextQuestion', 'selectedAnswers', 'GetFileAccessToken', 'GetFileLimit', 'GetFileListen']),
         answersList() {
-            if (this.selectedAnswers) {
+            if (this.selectedAnswers[0]) {
                 return this.selectedAnswers.map(item => item.answerId)
             } else {
                 return []

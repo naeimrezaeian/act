@@ -1,8 +1,8 @@
 import axios from "axios";
 import router from "./router";
 const requestFetch = axios.create({
-    baseURL: 'https://api.rudn.site:7064/'
-    //baseURL: 'https://localhost:7064/'
+    //baseURL: 'https://api.rudn.site:7064/'
+    baseURL: 'https://localhost:7064/'
 });
 
 requestFetch.interceptors.request.use((request) => {

@@ -16,6 +16,10 @@ export default {
             type: String,
             require: true
         },
+        CurrentSubtestId: {
+            type: String,
+            require: true
+        }
 
     }
 
