@@ -11,8 +11,8 @@
 
 
         <questionText v-if="CurrentQuestionType === 'text'" :CurrentQuestionId="this.CurrentQuestionId"
-          :CurrentTitle="this.CurrentTitle" :CurrentQuestion="this.CurrentQuestion"
-          :CurrentAnswers="this.CurrentAnswers" />
+          :CurrentTitle="this.CurrentTitle" :CurrentQuestion="this.CurrentQuestion" :CurrentAnswers="this.CurrentAnswers"
+          :CurrentSubtestId="this.currentSubtestId" />
 
         <questionLetter v-if="CurrentQuestionType === 'letter'" :CurrentTitle="this.CurrentTitle"
           :CurrentQuestion="this.CurrentQuestion" />
@@ -20,12 +20,14 @@
         <questionAudio v-if="CurrentQuestionType === 'audio'" :CurrentTitle="this.CurrentTitle"
           :CurrentQuestion="this.CurrentQuestion" :CurrentAnswers="this.CurrentAnswers"
           :CurrentAudioFile="this.CurrentFile" :CurrentAudioLimit="this.CurrentLimit"
-          :SelectedAnswers="this.SelectedAnswers" :CurrentQuestionId="this.CurrentQuestionId" :CurrentId="this.CurrentId"/>
+          :SelectedAnswers="this.SelectedAnswers" :CurrentQuestionId="this.CurrentQuestionId" :CurrentId="this.CurrentId"
+          :CurrentSubtestId="this.currentSubtestId" />
 
         <questionVideo v-if="CurrentQuestionType === 'video'" :CurrentTitle="this.CurrentTitle"
           :CurrentQuestion="this.CurrentQuestion" :CurrentAnswers="this.CurrentAnswers"
           :CurrentVideoFile="this.CurrentFile" :CurrentVideoLimit="this.CurrentLimit"
-          :SelectedAnswers="this.SelectedAnswers" />
+          :SelectedAnswers="this.SelectedAnswers" :CurrentQuestionId="this.CurrentQuestionId" :CurrentId="this.CurrentId"
+          :CurrentSubtestId="this.currentSubtestId" />
 
         <a class="btn red" v-show="this.LastQuestion" @click="send">ОТПРАВИТЬ</a>
       </div>
@@ -34,10 +36,10 @@
 
         <ul>
           <template v-for="(question, index) in this.allQuestions() " :key="question.id">
-                       
+
             <li v-if="question.id === this.getCurrentPointer" @click="pointerclick(question.id)" class="active">
               {{ index + 1 }} </li>
-              
+
             <li v-else @click="pointerclick(question.id)">{{ index + 1 }}</li>
           </template>
         </ul>
@@ -72,7 +74,7 @@ export default {
   },
 
   computed: {
-   
+
     ...mapGetters(['currentSubtestMaxTime', 'currentSubtestId', 'currentSubtestRecord',
       'currentSubtestMaxScore', "allQuestions", "getQuestion", 'isWebcamera',
       'getCurrentPointer', 'selectedAnswers', 'currentStateData', 'getNextQuestion']),
@@ -93,7 +95,7 @@ export default {
       CurrentQuestionType: '',
       CurrentAnswers: [],
       CureentFile: '',
-      CurrentLimit: 0,    
+      CurrentLimit: 0,
       CurrentPointer: 0,
       SelectedAnswers: [],
       LastQuestion: false,
@@ -102,44 +104,44 @@ export default {
       endTime: '0',
       timerFinish: false,
       isDisabledValue: false,
-    
+
 
     }
   },
   methods: {
-    ...mapActions(['subtestQuestions', 'setTime', 'updateQuestionPointer', 'finishExam','getCurrentState','getAnswers']),
+    ...mapActions(['subtestQuestions', 'setTime', 'updateQuestionPointer', 'finishExam', 'getCurrentState', 'getAnswers']),
 
     updateQuestion() {
-     
-      if(this.getCurrentPointer !=null){
-      this.CurrentQuestionId = this.getQuestion(this.getCurrentPointer).questionId
-      this.CurrentId = this.getQuestion(this.getCurrentPointer).id
-      this.CurrentQuestion = this.getQuestion(this.getCurrentPointer).question
-      this.CurrentQuestionType = this.getQuestion(this.getCurrentPointer).type
-      this.CurrentAnswers = this.getQuestion(this.getCurrentPointer).answers
-      this.CurrentFile = this.getQuestion(this.getCurrentPointer).fileId || ''      
-      this.CurrentLimit = this.getQuestion(this.getCurrentPointer).listenLimitCount || 0 
-      this.CurrentTitle = this.getQuestion(this.getCurrentPointer).desc
-      
-      if (this.getNextQuestion) {
-         this.LastQuestion = false
-      } else {
-        this.LastQuestion = true
-      }
-      //console.log( "refs: ",this.$refs)
+
+      if (this.getCurrentPointer != null) {
+        this.CurrentQuestionId = this.getQuestion(this.getCurrentPointer).questionId
+        this.CurrentId = this.getQuestion(this.getCurrentPointer).id
+        this.CurrentQuestion = this.getQuestion(this.getCurrentPointer).question
+        this.CurrentQuestionType = this.getQuestion(this.getCurrentPointer).type
+        this.CurrentAnswers = this.getQuestion(this.getCurrentPointer).answers
+        this.CurrentFile = this.getQuestion(this.getCurrentPointer).fileId || ''
+        this.CurrentLimit = this.getQuestion(this.getCurrentPointer).listenLimitCount || 0
+        this.CurrentTitle = this.getQuestion(this.getCurrentPointer).desc
+
+        if (this.getNextQuestion) {
+          this.LastQuestion = false
+        } else {
+          this.LastQuestion = true
+        }
+        //console.log( "refs: ",this.$refs)
       }
     },
     pointerclick(index) {
       this.updateQuestionPointer(index)
       this.updateQuestion();
-     
-     
+
+
     },
     async send() {
       this.$refs.camera.stopRecord()
       await this.finishExam(this.currentSubtestId)
       this.setTime(0)
-      
+
       //this.isDisabledValue=true
     }
 
@@ -152,10 +154,10 @@ export default {
     await this.subtestQuestions(this.currentSubtestId)
     this.updateQuestionPointer(this.currentStateData.questionId)
     this.updateQuestion();
-   // console.log("time:"+this.currentSubtestMaxTime())
-   this.setTime(this.currentStateData.start ?? this.currentSubtestMaxTime())
+    // console.log("time:"+this.currentSubtestMaxTime())
+    this.setTime(this.currentStateData.start ?? this.currentSubtestMaxTime())
     // this.setTime(this.currentStateData.start ?? 20)
-      //this.setTime(100 ?? 100)
+    //this.setTime(100 ?? 100)
   },
   mounted() {
     // this.Webcamera=this.$refs.camera.webcamera
@@ -163,7 +165,7 @@ export default {
     this.$soketio.start();
     this.$store.subscribe(async (mutation) => {
       switch (mutation.type) {
-        
+
         case 'updateTimeleft':
           this.timerFinish = this.$store.state.timer.timerFinish
           if (this.timerFinish) {
@@ -174,11 +176,11 @@ export default {
           }
           break
         case 'updateSendAnswer':
-        
+
           if (this.getNextQuestion) {
-            
+
             this.updateQuestionPointer(this.getNextQuestion.id)
-            
+
           }
           this.SelectedAnswers = this.selectedAnswers[0]
           this.updateQuestion()
@@ -193,5 +195,4 @@ export default {
 }
 </script>
 
-<style lang="scss" scoped>
-</style>
+<style lang="scss" scoped></style>

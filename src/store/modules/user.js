@@ -9,30 +9,29 @@ export default {
         currentModule: {}
     },
     actions: {
-        async loginUser({ commit , getters}, user) {
-           
+        async loginUser({ commit, getters }, user) {
+
             try {
                 var response = await httpClient.post('api/auth/user/login', { username: user.login, password: user.password })
                 if (response.data && response.data.success === true) {
-                    
+
                     localStorage.removeItem("token")
                     localStorage.removeItem("exam")
                     localStorage.setItem('token', response.data.result.token);
                     localStorage.setItem("exam", JSON.stringify(response.data.result.exam))
                     sessionStorage.setItem('isAuth', 'true');
-                    httpClient.defaults.headers.common['Authorization']=  'Bearer '+localStorage.getItem("token");
+                    httpClient.defaults.headers.common['Authorization'] = 'Bearer ' + localStorage.getItem("token");
                     const error = ''
-                    const loading = false;                    
+                    const loading = false;
                     commit('updateLogin', { error: error, loading: loading })
-                    var currentState=getters.currentStateData
-                   
+                    var currentState = getters.currentStateData
 
-                    if(currentState.moduleId && currentState.subtestId)
-                    {
+
+                    if (currentState.moduleId && currentState.subtestId) {
                         router.push("/exam");
                         return
                     }
-                    
+
                     router.push("/level");
 
                 } else {
@@ -42,8 +41,7 @@ export default {
                     commit('updateLogin', { error: error, loading: loading })
                 }
 
-                if(currentState.levelStarted)
-                {
+                if (currentState.levelStarted) {
                     router.push("/module");
                     return
                 }
@@ -59,7 +57,6 @@ export default {
 
         },
         async startSubtest(_, data) {
-            console.log("start subtest")
             try {
                 await httpClient.post('api/userexam/UserSubtests/StartSubtest/' + data)
 
@@ -68,34 +65,31 @@ export default {
             }
         },
         setCurrentSubtest({ commit }, data) {
-            console.log("set current")
             const exam = JSON.parse(localStorage.getItem("exam"))
-            console.log(exam)
             localStorage.removeItem('exam')
             exam.currentState.moduleId = data.moduleId
             exam.currentState.subtestId = data.subtestId
             localStorage.setItem("exam", JSON.stringify(exam))
-             commit("updateCurrentSubtest", data)
+            commit("updateCurrentSubtest", data)
         },
-        async getCurrentState({commit}) {
-           console.log("get")
-            
+        async getCurrentState({ commit }) {
+
             try {
                 const response = await httpClient.get('api/userexam/UserExamCurrentState')
-               
-                if (response.data && response.data.success) {
-                   
-                    const exam = JSON.parse(localStorage.getItem("exam"))
-                    
-                    
-                    localStorage.removeItem('exam')
-                    exam.currentState=response.data.result.currentState
-                    exam.modules=response.data.result.modules
-                   
-                    localStorage.setItem("exam", JSON.stringify(exam))
-                   
 
-                    commit("updateCurrentSubtest", {moduleId:exam.currentState.moduleId,subtestId:exam.currentState.subtestId})
+                if (response.data && response.data.success) {
+
+                    const exam = JSON.parse(localStorage.getItem("exam"))
+
+
+                    localStorage.removeItem('exam')
+                    exam.currentState = response.data.result.currentState
+                    exam.modules = response.data.result.modules
+
+                    localStorage.setItem("exam", JSON.stringify(exam))
+
+
+                    commit("updateCurrentSubtest", { moduleId: exam.currentState.moduleId, subtestId: exam.currentState.subtestId })
                 }
             } catch (error) {
                 console.log(error)
@@ -111,7 +105,7 @@ export default {
         },
         updateCurrentSubtest(state, data) {
             state.currentModule = data
-            
+
         }
     },
 
@@ -129,26 +123,25 @@ export default {
         currentSubtestId(state) {
             return state.currentModule.subtestId ?? JSON.parse(localStorage.getItem("exam")).currentState.subtestId
         },
-        
+
         currentSubtestMaxTime: () => (id) => {
-          if (id!=null){
-          
-            return JSON.parse(localStorage.getItem("exam")).modules.map(
-                function (e) {
-                    return e.subtests.filter(i => i.id === id)
-                }
-            ).filter(item=>item.length)[0][0].maxTime
-           }
+            if (id != null) {
+                return JSON.parse(localStorage.getItem("exam")).modules.map(
+                    function (e) {
+                        return e.subtests.filter(i => i.subtest.id === id)
+                    }
+                ).filter(item => item.length)[0][0].subtest.maxTime
+            }
         },
 
-       
+
         currentSubtestMaxScore: () => (id) => {
-            if (id!=null){
-            return JSON.parse(localStorage.getItem("exam")).modules.map(
-                function (e) {
-                    return e.subtests.filter(i => i.id === id)
-                }
-            ).filter(item=>item.length)[0][0].subtest.maxScore
+            if (id != null) {
+                return JSON.parse(localStorage.getItem("exam")).modules.map(
+                    function (e) {
+                        return e.subtests.filter(i => i.subtest.id === id)
+                    }
+                ).filter(item => item.length)[0][0].subtest.maxScore
             }
         },
         currentSubtestRecord() {

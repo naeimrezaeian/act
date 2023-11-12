@@ -1,37 +1,35 @@
 import httpClient from '@/httpClient';
 
 export default {
-    state:{
-        selectedAnswers:[],
+    state: {
+        selectedAnswers: [],
     },
-    actions:{   
-        async getAnswers({commit},subtestId){
-            if (subtestId!=null){
-            const response= await httpClient.get("api/userexam/questions/GetAnswers/"+subtestId,{showLoader:false})
-            commit("updateSendAnswer",response.data.result)
+    actions: {
+        async getAnswers({ commit }, subtestId) {
+            if (subtestId != null) {
+                const response = await httpClient.get("api/userexam/questions/GetAnswers/" + subtestId, { showLoader: false })
+                commit("updateSendAnswer", response.data.result)
             }
         },
-        async sendAnswer({commit},[questionId,questionTextId,answerId,nextQuestion]){       
-           console.log("send Answer")
-           console.log(questionId,questionTextId,answerId,nextQuestion)
-            const response= await httpClient.post("api/userexam/questions/examAnswer/",{questionId,questionTextId,answerId,nextQuestion:nextQuestion?nextQuestion.id:null},{showLoader:false})
-          
-            commit("updateSendAnswer",response.data.result)
-        } 
-        
-    },
-    mutations:{
-        updateSendAnswer(state,data){
-            state.selectedAnswers=[]
-            state.selectedAnswers.push(data)
+        async sendAnswer({ commit }, [subtestId, questionId, questionTextId, answerId, nextQuestion]) {
+            const response = await httpClient.post("api/userexam/questions/examAnswer/", { subtestId, questionId, questionTextId, answerId, nextQuestion: nextQuestion ? nextQuestion.id : null }, { showLoader: false })
+
+            commit("updateSendAnswer", response.data.result)
         }
-      
+
     },
-    getters:{
-        selectedAnswers(state){
-           
+    mutations: {
+        updateSendAnswer(state, data) {
+            state.selectedAnswers = []
+            state.selectedAnswers.push(...data)
+        }
+
+    },
+    getters: {
+        selectedAnswers(state) {
+
             return state.selectedAnswers
         }
-       
+
     }
 }

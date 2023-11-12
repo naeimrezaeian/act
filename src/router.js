@@ -1,61 +1,58 @@
 import { createWebHistory, createRouter } from "vue-router";
 
-import  ACTlogin from './components/Login.vue'
-import  ACTlevel from './components/Level.vue'
-import  ACTmodule from './components/Module.vue'
-import  ACTexam from './components/Exam.vue'
-import  ACTfinish from './components/FinishExam.vue'
+import ACTlogin from './components/Login.vue'
+import ACTlevel from './components/Level.vue'
+import ACTmodule from './components/Module.vue'
+import ACTexam from './components/Exam.vue'
+import ACTfinish from './components/FinishExam.vue'
 import test from './components/NaeimTest2.vue'
 
-const checkLocalStorage=(to,from,next)=>{
-  if (localStorage.getItem("exam")===null){
-    console.log("LocalStroge error ")
-    next({name:'Login'})
-  }else{
+const checkLocalStorage = (to, from, next) => {
+  if (localStorage.getItem("exam") === null) {
+    next({ name: 'Login' })
+  } else {
     next()
   }
 }
 
 
-const checkLogin=(to,from,next) =>{
+const checkLogin = (to, from, next) => {
 
-  if (!localStorage.getItem("exam")){
-    console.log("Exam not found")
-   localStorage.removeItem('token')
+  if (!localStorage.getItem("exam")) {
+    localStorage.removeItem('token')
     //next({name:'Login'}) 
   }
-  
-  if (to.meta.requiresVisitor   || !localStorage.getItem("token")){
-    if (to.fullPath==="/"){ next() }else{ next({name:'Login'})  }
-  }else{
-    var data=JSON.parse(localStorage.getItem("exam"))
-    console.log(data)
-    let currentState={}
-    if (data===null){
-       
-       
 
-    }else{
-      currentState=data.currentState 
+  if (to.meta.requiresVisitor || !localStorage.getItem("token")) {
+    if (to.fullPath === "/") { next() } else { next({ name: 'Login' }) }
+  } else {
+    var data = JSON.parse(localStorage.getItem("exam"))
+    let currentState = {}
+    if (data === null) {
 
-      if(currentState.start===null){   
 
-        if (currentState.moduleId===null && to.fullPath!="/module"){
-         if (to.fullPath==="/level"){ next() }else{ next({name:'Level'})  }
-       }else{
-         
-         if (to.fullPath==="/module"){ next() }else{ next({name:'Module'})  }
-       }
-     
-        }else{
-         next({name:'Exam'})
+
+    } else {
+      currentState = data.currentState
+
+      if (currentState.start === null) {
+
+        if (currentState.moduleId === null && to.fullPath != "/module") {
+          if (to.fullPath === "/level") { next() } else { next({ name: 'Level' }) }
+        } else {
+
+          if (to.fullPath === "/module") { next() } else { next({ name: 'Module' }) }
         }
+
+      } else {
+        next({ name: 'Exam' })
+      }
 
     }
 
- 
 
-}
+
+  }
 
 }
 
@@ -67,22 +64,22 @@ const routes = [
     name: "Login",
     component: ACTlogin,
     beforeEnter: checkLogin,
-  
+
   },
   {
     path: "/level",
     name: "Level",
     component: ACTlevel,
     beforeEnter: [checkLocalStorage]
-   
+
   },
   {
     path: "/module",
     name: "Module",
     component: ACTmodule,
     beforeEnter: [checkLocalStorage]
-    
-   
+
+
   },
   {
     path: "/exam",
@@ -95,13 +92,13 @@ const routes = [
     name: "Finish",
     component: ACTfinish,
   },
-  
+
   {
-path:"/test",
-name:"test",
-component:test
+    path: "/test",
+    name: "test",
+    component: test
   },
-  
+
 ];
 
 const router = createRouter({

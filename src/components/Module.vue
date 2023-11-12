@@ -1,9 +1,9 @@
 <template>
-    <section class="pages" >
+    <section class="pages">
         <div class="box">
-            <div class="left">  
-                <ACTmoduleList></ACTmoduleList>             
-          
+            <div class="left">
+                <ACTmoduleList></ACTmoduleList>
+
             </div>
             <div class="right">
                 <div class="title">{{ title }}</div>
@@ -12,7 +12,6 @@
             </div>
         </div>
     </section>
-
 </template>
 
 <script>
@@ -21,64 +20,60 @@ import { mapGetters, mapActions } from 'vuex'
 import ACTmoduleList from './ModuleList.vue'
 export default {
     name: "ACTmodule",
-     components: {
+    components: {
         ACTmoduleList,
-        
-            
-        },
+
+
+    },
     data() {
         return {
             exam: '',
             title: '',
             desc: '',
-             pageStatus:true
+            pageStatus: true
         }
-    },    
-    
+    },
+
     async created() {
-        
-       
+
+
         await this.getCurrentState()
-       
-        console.log("model get current ")
 
-        console.log(JSON.parse(localStorage.getItem("exam")))
-            const currentmoudle = JSON.parse(localStorage.getItem("exam")).modules.map(
-                function (e) {
-                    const subtest = e.subtests.filter(i => i.status === 'active')
-                    return subtest.length ? { module: e, subtest: subtest[0] } : null
-                }
-            ).filter(item => item)[0]
+        const currentmoudle = JSON.parse(localStorage.getItem("exam")).modules.map(
+            function (e) {
+                const subtest = e.subtests.filter(i => i.status === 'active')
+                return subtest.length ? { module: e, subtest: subtest[0] } : null
+            }
+        ).filter(item => item)[0]
 
-            
-            if (currentmoudle) {
-            
+
+        if (currentmoudle) {
+
             await this.setCurrentSubtest({ moduleId: currentmoudle.module.id, subtestId: currentmoudle.subtest.subtest.id })
             const response = await httpClient.get("api/userexam/usersubtests/" + this.currentSubtestId())
-           
+
             this.title = response.data.result.subtest.title;
-            this.desc = response.data.result.subtest.desc;            
+            this.desc = response.data.result.subtest.desc;
 
         }
-        else{
-            console.log('exam done')
-            this.$router.push({name:'Finish'});
+        else {
+            this.$router.push({ name: 'Finish' });
         }
-        
 
-        
-       
+
+
+
 
     }, methods: {
-          ...mapGetters(['moduleList', 'currentSubtestId']),
+        ...mapGetters(['moduleList', 'currentSubtestId']),
         ...mapActions(['setCurrentSubtest', 'sendCurrentState', 'startSubtest', 'getCurrentState']),
-        async start() {            
-            await this.startSubtest(this.currentSubtestId())        
+        async start() {
+            await this.startSubtest(this.currentSubtestId())
             await this.getCurrentState()
             this.$router.push("/exam");
         }
     },
-    mounted(){
+    mounted() {
         this.$soketio.start();
     }
 

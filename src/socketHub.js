@@ -1,14 +1,15 @@
-import { HubConnectionBuilder,LogLevel } from '@microsoft/signalr'
+import { HubConnectionBuilder, LogLevel } from '@microsoft/signalr'
 
-class SocketHub{
-    constructor(){
-        this.client= new HubConnectionBuilder()
-        .withUrl('http://51.250.106.203:7023/RecordVideoHub', { accessTokenFactory: () => localStorage.getItem("token") })
-        .configureLogging(LogLevel.Error)
-        .withAutomaticReconnect()
-        .build()
+class SocketHub {
+    constructor() {
+        this.client = new HubConnectionBuilder()
+            //.withUrl('https://rec.rudn.site:7023/RecordVideoHub', { accessTokenFactory: () => localStorage.getItem("token") })
+            .withUrl('https://localhost:7023/RecordVideoHub', { accessTokenFactory: () => localStorage.getItem("token") })
+            .configureLogging(LogLevel.Error)
+            .withAutomaticReconnect()
+            .build()
     }
-    start(){
+    start() {
         this.client.start();
     }
 }

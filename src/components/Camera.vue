@@ -12,7 +12,7 @@ import { mapActions } from 'vuex'
 export default {
 
     name: 'ACTCamera',
-   
+
     data() {
         return {
             isRecording: false,
@@ -23,85 +23,84 @@ export default {
             isWebcamera: false,
         }
     },
-    mounted(){
-        
-        
+    mounted() {
+
+
     },
     created() {
-       
-        if (this.$soketio.client.state==="Disconnected"){           
+
+        if (this.$soketio.client.state === "Disconnected") {
             this.$soketio.start()
-        }       
-       
+        }
+
         let self = this;
-            async function handleDataAvailable(event) {
-               
-                const ab = await event.data.arrayBuffer();
-                const bytes = new Uint8Array(ab);
-                const ab64 = base64.bytesToBase64(bytes)
-                await self.$soketio.client.invoke("UploadVideoStream", ab64)
-            }
-            
-            if ('mediaDevices' in navigator && 'getUserMedia' in navigator.mediaDevices) {
-                navigator.mediaDevices.getUserMedia({
-                    video: {
-                        width: { ideal: 640 },
-                        height: { ideal: 480 }
-                    },
-                    audio: false
-                }).then(mediaStream => {
+        async function handleDataAvailable(event) {
 
-                    this.stream = mediaStream;
-                    this.recorder = new MediaRecorder(mediaStream, {
-                        mimeType: "video/webm; codecs=vp9",
-                        audioBitsPerSecond: 128000
-                    });
+            const ab = await event.data.arrayBuffer();
+            const bytes = new Uint8Array(ab);
+            const ab64 = base64.bytesToBase64(bytes)
+            await self.$soketio.client.invoke("UploadVideoStream", ab64)
+        }
 
-                    this.recorder.ondataavailable = handleDataAvailable
-                    this.recorder.start(60);
+        if ('mediaDevices' in navigator && 'getUserMedia' in navigator.mediaDevices) {
+            navigator.mediaDevices.getUserMedia({
+                video: {
+                    width: { ideal: 640 },
+                    height: { ideal: 480 }
+                },
+                audio: false
+            }).then(mediaStream => {
+
+                this.stream = mediaStream;
+                this.recorder = new MediaRecorder(mediaStream, {
+                    mimeType: "video/webm; codecs=vp9",
+                    audioBitsPerSecond: 128000
+                });
+
+                this.recorder.ondataavailable = handleDataAvailable
+                this.recorder.start(60);
 
 
-                    this.$refs.videoRec.src = null;
-                    this.$refs.videoRec.srcObject = mediaStream;
-                    this.webcamera = true
-                    this.set_isWebcamera(true)
-                    this.webcam = "OK"
+                this.$refs.videoRec.src = null;
+                this.$refs.videoRec.srcObject = mediaStream;
+                this.webcamera = true
+                this.set_isWebcamera(true)
+                this.webcam = "OK"
 
+            })
+                .catch((err) => {
+                    console.log(err)
+
+
+                    this.webcam = "Webcam Error"
                 })
-                    .catch((err) => {
-                        console.log(err)
 
 
-                        this.webcam = "Webcam Error"
-                    })
+        } else {
+            this.webcam = "Webcam unsuported"
+        }
 
 
-            } else {
-                this.webcam = "Webcam unsuported"
-            }
-        
-       
 
     },
-    
+
     methods: {
         ...mapActions(['set_isWebcamera']),
         stopRecord() {
-            console.log("camera stop")           
-            this.isRecording = false;            
+            this.isRecording = false;
             let tracks = this.stream.getTracks();
-            
+
             tracks.forEach(track => {
-                
-				track.stop();
-			});
+
+                track.stop();
+            });
 
             this.set_isWebcamera(false)
         }
 
     }
 
-    }
+}
 
 
 
