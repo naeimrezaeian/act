@@ -33,7 +33,8 @@ export default {
     async getAudio(){
       console.log("Play file")
       var reader = new FileReader();
-const responseFile = await httpClient.get('/api/files/DownloadFile/' + this.fileId+"/"+this.accessCode,{ responseType: 'blob' ,mode: 'no-cors'})
+const responseFile = await httpClient.get('/api/files/DownloadFile/' + this.fileId+"/"+this.accessCode,{ responseType: 'blob' })
+console.log(responseFile)
 reader.readAsBinaryString(responseFile.data);
 
 reader.onload = function(){

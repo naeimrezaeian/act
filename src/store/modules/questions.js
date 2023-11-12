@@ -16,16 +16,6 @@ export default {
         async FileAccessToken({ commit }, fileId) {
             console.log("GetAccessToken")
 
-            /* {
-                 "success": true,
-                 "result": {
-                     "fileId": "3ff008c9-88ff-4df0-be69-56d8803cf160",
-                     "accessCode": 739308630,
-                     "listenLimitCount": 3,
-                     "listenCount": 1
-                 }
-             }
-             */
 
             const responseAccess = await httpClient.get('/api/files/DownloadFile/GetFileAccessCode/' + fileId, { showLoader: false })
 
