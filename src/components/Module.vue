@@ -49,7 +49,7 @@ export default {
 
         if (currentmoudle) {
 
-            await this.setCurrentSubtest({ moduleId: currentmoudle.module.id, subtestId: currentmoudle.subtest.subtest.id })
+            await this.setCurrentSubtest({ moduleId: currentmoudle.module.id, subtestId: currentmoudle.subtest.id })
             const response = await httpClient.get("api/userexam/usersubtests/" + this.currentSubtestId())
 
             this.title = response.data.result.subtest.title;
