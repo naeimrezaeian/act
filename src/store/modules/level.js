@@ -6,20 +6,21 @@ export default {
     },
     actions:{
 
-        async startUserLevel({commit}){
+        async startUserLevel(){
             
             await httpClient.post("api/userexam/levels/StartUserLevel")
         },
+        
         async levelInformation({commit},levelData){    
                
-       const response= await httpClient.get("api/userexam/levels/"+levelData)
-       
-        if (response.data && response.data.success===true){
-            commit('updateLevel',response.data.result)
+            const response= await httpClient.get("api/userexam/levels/"+levelData)
+            
+                if (response.data && response.data.success===true){
+                    commit('updateLevel',response.data.result)
+                }
+                
+            
         }
-        
-    
-}
     },
     mutations:{
         updateLevel(state,data){

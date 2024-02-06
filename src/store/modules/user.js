@@ -1,5 +1,4 @@
 import httpClient from '@/httpClient';
-import { createStructuralDirectiveTransform } from '@vue/compiler-core';
 import router from '../../router'
 export default {
     state: {
@@ -27,7 +26,7 @@ export default {
                     var currentState = getters.currentStateData
 
 
-                    if (currentState.moduleId && currentState.subtestId) {
+                    if (currentState?.moduleId && currentState?.subtestId) {
                         router.push("/exam");
                         return
                     }
@@ -128,7 +127,7 @@ export default {
             if (id != null) {
                 return JSON.parse(localStorage.getItem("exam")).modules.map(
                     function (e) {
-                        return e.subtests.filter(i => i.subtest.id === id)
+                        return e.subtests.filter(i => i.id === id)
                     }
                 ).filter(item => item.length)[0][0].subtest.maxTime
             }
@@ -139,7 +138,7 @@ export default {
             if (id != null) {
                 return JSON.parse(localStorage.getItem("exam")).modules.map(
                     function (e) {
-                        return e.subtests.filter(i => i.subtest.id === id)
+                        return e.subtests.filter(i => i.id === id)
                     }
                 ).filter(item => item.length)[0][0].subtest.maxScore
             }

@@ -8,7 +8,7 @@ export default {
   name: "timerComponent",
   data() {
     return {
-      time: "00:00",
+      time: "00:00:00",
     };
   },
   

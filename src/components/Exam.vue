@@ -156,7 +156,7 @@ export default {
     this.updateQuestionPointer(this.currentStateData.questionId)
     this.updateQuestion();
     // console.log("time:"+this.currentSubtestMaxTime())
-    this.setTime(this.currentStateData.start ?? this.currentSubtestMaxTime())
+    this.setTime(this.currentStateData.start ?? (this.currentSubtestMaxTime() * 60))
     // this.setTime(this.currentStateData.start ?? 20)
     //this.setTime(100 ?? 100)
   },

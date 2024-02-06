@@ -46,9 +46,10 @@ export default {
             }, 1000);
         },
         displayTimeLeft({ commit }, secondsLeft) {
+            const hour = Math.floor(secondsLeft/ 3600);
             const minutes = Math.floor((secondsLeft % 3600) / 60);
             const seconds = secondsLeft % 60;
-            commit("updateTimeleft", { minutes, seconds })
+            commit("updateTimeleft", { hour, minutes, seconds })
 
         },
         displayEndTime({ commit }, timestamp) {
@@ -74,7 +75,7 @@ export default {
             state.endTime = `${hourConvert(data.hour)}:${zeroPadded(data.minutes)}`;
         },
         updateTimeleft(state, data) {
-            state.timeLeft = `${zeroPadded(data.minutes)}:${zeroPadded(data.seconds)}`;
+            state.timeLeft = `${zeroPadded(data.hour)}:${zeroPadded(data.minutes)}:${zeroPadded(data.seconds)}`;
             if (data.minutes === 0 && data.seconds === 0) {
                 state.timerFinish = true
             }
