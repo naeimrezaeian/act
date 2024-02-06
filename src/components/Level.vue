@@ -53,6 +53,9 @@ import {mapGetters,mapActions} from 'vuex'
     }
 </script>
 
-<style lang="scss" scoped>
-
+<style scoped>
+.text-main{
+    max-height: 400px !important;
+    overflow: auto;
+}
 </style>

@@ -90,4 +90,11 @@ export default {
     color: rgb(247, 255, 13);
 
 }
+
+.text {
+    width: 86% !important;
+    max-height: 30% !important;
+    overflow: auto;
+    margin-bottom: 50px;
+}
 </style>
