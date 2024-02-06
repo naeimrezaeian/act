@@ -7,7 +7,7 @@
         </button>
         <span>Осталось прослушиваний: {{ CurrentFileLimit - CurrentFileListen }}</span>
     </div>
-    <div class="text">{{ CurrentQuestion }} </div>
+    <div class="text" v-html="CurrentQuestion"></div>
     <div class="opros">
         <div class="zag">Варианты ответа:</div>
         <template v-for="item in CurrentAnswers" :key="item.id">

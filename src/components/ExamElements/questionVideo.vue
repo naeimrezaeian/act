@@ -12,7 +12,7 @@
             </div>
         </div>
 
-        <div class="text" v-html="this.CurrentQuestion"></div>
+        <div class="text" v-html="CurrentQuestion"></div>
     </div>
     <div class="opros"> <br>
         <div class="zag">Варианты ответа:</div>
