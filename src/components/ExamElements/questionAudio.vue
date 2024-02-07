@@ -1,9 +1,10 @@
 <template>
     <div class="title">{{ CurrentTitle }}</div>
     <div class="audio-vopros">
-        <button type="button" class="btn" v-bind:class="{ btn_play: this.AudioBtn }" @click="getAudio()">
+        <button type="button" :disabled="(CurrentFileLimit - CurrentFileListen) <= 0 || audioPlaying"
+            class="btn" :class="[ ((CurrentFileLimit - CurrentFileListen) <= 0 || audioPlaying) ? 'btn-disabled' : 'btn-play']"
+            @click="getAudio()">
             <p>ПРОСЛУШАТЬ ВОПРОС</p>
-
         </button>
         <span>Осталось прослушиваний: {{ CurrentFileLimit - CurrentFileListen }}</span>
     </div>
@@ -28,15 +29,13 @@ export default {
     name: "questionAudio",
     data() {
         return {
-            AudioBtn: false,
             audio: new Audio(),
             CurrentFileAccessToken: null,
             CurrentFileLimit: null,
-            CurrentFileListen: null
+            CurrentFileListen: null,
+            audioPlaying: false,
         }
     },
-
-
     props: {
         CurrentTitle: {
             type: String,
@@ -74,7 +73,9 @@ export default {
             type: String,
             require: true
         }
-
+    },
+    async created() {
+        this.getCurrentFileStatus();
     },
     computed: {
         ...mapGetters(['getCurrentPointer', 'getNextQuestion', 'selectedAnswers', 'GetFileAccessToken', 'GetFileLimit', 'GetFileListen']),
@@ -85,54 +86,49 @@ export default {
                 return []
             }
         }
-
     },
-
     methods: {
         ...mapActions(['sendAnswer', 'FileAccessToken']),
         isAnswer(id) { return this.answersList.includes(id) },
         async getAudio() {
-            console.log("Get Audio")
-            //
+            this.audioPlaying = true;
             await this.FileAccessToken(this.CurrentAudioFile)
-
             this.CurrentFileAccessToken = this.GetFileAccessToken()
-            this.CurrentFileLimit = this.GetFileLimit()
-            this.CurrentFileListen = this.GetFileListen()
-
             var reader = new FileReader();
             const responseFile = await httpClient.get('/api/files/DownloadFile/' + this.CurrentAudioFile + "/" + this.CurrentFileAccessToken, { responseType: 'blob', showLoader: false })
             reader.readAsBinaryString(responseFile.data);
 
-            reader.onload = function () {
-
+            reader.onload = async function () {
                 var arrayBuffer = reader.result;
                 var base64str = btoa(arrayBuffer);
-                this.audio.src = "data:audio/wav;base64," + base64str
+                this.audio.src = "data:audio/wav;base64," + base64str;
+                this.getCurrentFileStatus();
                 this.audio.play()
-            }.bind(this)
-
-
-        },
-        playAudio() {
-            console.log("play " + this.CurrentAudioFile)
-            this.AudioBtn = !this.AudioBtn
-            var audio = new Audio("uploads/" + this.CurrentAudioFile)
-            let that = this
-            audio.ontimeupdate = function () {
-                //console.log( audio.currentTime.toFixed()+" "+audio.duration)
-                if (audio.currentTime === audio.duration) {
-                    that.AudioBtn = !that.AudioBtn
-                    console.log("audio finish")
+                this.audio.onended = () => { 
+                    this.audioPlaying = false;
                 }
-            }
-            audio.play()
-
-
+            }.bind(this)
+        },
+        async getCurrentFileStatus() {
+            await this.FileAccessToken(this.CurrentAudioFile);
+            this.CurrentFileLimit = this.GetFileLimit();
+            this.CurrentFileListen = this.GetFileListen();
+        }
+    },
+    watch: {
+        'CurrentTitle': async function() {
+            this.audio.src = null;
+            this.audioPlaying = false;
+            this.getCurrentFileStatus();
         }
     }
 }
 
 </script>
 
-<style  scoped></style>
+<style scoped>
+.btn-disabled {
+    background-color: grey !important;
+    cursor: default;
+}
+</style>
