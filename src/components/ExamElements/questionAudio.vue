@@ -4,9 +4,7 @@
         <button type="button" :disabled="(CurrentFileLimit - CurrentFileListen) <= 0 || audioPlaying"
             class="btn" :class="[ ((CurrentFileLimit - CurrentFileListen) <= 0 || audioPlaying) ? 'btn-disabled' : 'btn-play']"
             @click="getAudio()">
-
             <p>ПРОСЛУШАТЬ ВОПРОС</p>
-
         </button>
         <span>Осталось прослушиваний: {{ CurrentFileLimit - CurrentFileListen }}</span>
     </div>
@@ -31,7 +29,6 @@ export default {
     name: "questionAudio",
     data() {
         return {
-            AudioBtn: false,
             audio: new Audio(),
             CurrentFileAccessToken: null,
             CurrentFileLimit: null,
@@ -39,8 +36,6 @@ export default {
             audioPlaying: false,
         }
     },
-
-
     props: {
         CurrentTitle: {
             type: String,
@@ -78,12 +73,9 @@ export default {
             type: String,
             require: true
         }
-
     },
     async created() {
-        await this.FileAccessToken(this.CurrentAudioFile);
-        this.CurrentFileLimit = this.GetFileLimit();
-        this.CurrentFileListen = this.GetFileListen();
+        this.getCurrentFileStatus();
     },
     computed: {
         ...mapGetters(['getCurrentPointer', 'getNextQuestion', 'selectedAnswers', 'GetFileAccessToken', 'GetFileLimit', 'GetFileListen']),
@@ -94,9 +86,7 @@ export default {
                 return []
             }
         }
-
     },
-
     methods: {
         ...mapActions(['sendAnswer', 'FileAccessToken']),
         isAnswer(id) { return this.answersList.includes(id) },
@@ -112,23 +102,24 @@ export default {
                 var arrayBuffer = reader.result;
                 var base64str = btoa(arrayBuffer);
                 this.audio.src = "data:audio/wav;base64," + base64str;
-                await this.FileAccessToken(this.CurrentAudioFile);
-                this.CurrentFileLimit = this.GetFileLimit();
-                this.CurrentFileListen = this.GetFileListen();
+                this.getCurrentFileStatus();
                 this.audio.play()
                 this.audio.onended = () => { 
                     this.audioPlaying = false;
                 }
             }.bind(this)
         },
-    },
-    watch: {
-        'CurrentTitle': async function() {
-            this.audio.pause();
-            this.audioPlaying = false;
+        async getCurrentFileStatus() {
             await this.FileAccessToken(this.CurrentAudioFile);
             this.CurrentFileLimit = this.GetFileLimit();
             this.CurrentFileListen = this.GetFileListen();
+        }
+    },
+    watch: {
+        'CurrentTitle': async function() {
+            this.audio.src = null;
+            this.audioPlaying = false;
+            this.getCurrentFileStatus();
         }
     }
 }
