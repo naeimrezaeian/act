@@ -33,63 +33,42 @@ export default {
             pageStatus: true
         }
     },
-
     async created() {
-
-
         await this.getCurrentState()
-
         const currentmoudle = JSON.parse(localStorage.getItem("exam")).modules.map(
             function (e) {
                 const subtest = e.subtests.filter(i => i.status === 'active')
                 return subtest.length ? { module: e, subtest: subtest[0] } : null
             }
         ).filter(item => item)[0]
-
-
         if (currentmoudle) {
-
             await this.setCurrentSubtest({ moduleId: currentmoudle.module.id, subtestId: currentmoudle.subtest.id })
-            const response = await httpClient.get("api/userexam/usersubtests/" + this.currentSubtestId())
-
+            const response = await httpClient.get("api/userexam/usersubtests/" + this.currentSubtestId)
             this.title = response.data.result.subtest.title;
             this.desc = response.data.result.subtest.desc;
-
         }
         else {
             this.$router.push({ name: 'Finish' });
         }
-
-
-
-
-
-    }, methods: {
-        ...mapGetters(['moduleList', 'currentSubtestId']),
+    },
+    mounted() {
+        this.$soketio.start();
+    },
+    computed: {
+        ...mapGetters(['currentSubtestId']),
+    },
+    methods: {
         ...mapActions(['setCurrentSubtest', 'sendCurrentState', 'startSubtest', 'getCurrentState']),
         async start() {
-            await this.startSubtest(this.currentSubtestId())
+            await this.startSubtest(this.currentSubtestId)
             await this.getCurrentState()
             this.$router.push("/exam");
         }
     },
-    mounted() {
-        this.$soketio.start();
-    }
-
 }
 </script>
 
 <style  scoped>
-.subtest-passed {
-
-    text-decoration: line-through;
-}
-
-.subtest-current {
-    color: rgb(247, 255, 13);
-
-}
 
 .text {
     width: 86% !important;
