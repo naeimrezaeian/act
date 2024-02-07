@@ -3,15 +3,21 @@
     <div class="box">
         <div class="player">
             <div class="video">
-                <video id="videoplayer" ref="videoPlayer" @timeupdate="updateVideoTime" style="width:100%;"></video>
+                <video id="videoplayer" ref="videoPlayer" @timeupdate="updateVideoTime" style="width:100%; height: 300px;"></video>
             </div>
-
             <div class="panel">
-                <div class="play" @click="videoplay()"><img src="@/assets/img/play.svg" alt=""></div>
-                <div class="audio-text">Осталось прослушиваний: {{ CurrentVideoLimit }}</div>
+                <div class="play" @click="videoplay()" v-if="!videoPlaying"
+                    :style="[ (CurrentFileLimit - CurrentFileListen <= 0) ? 'visibility: hidden;' : 'visibility: visible;' ]">
+                    <img src="@/assets/img/play.svg" alt="">
+                </div>
+                <div v-if="videoPlaying">
+                    <svg xmlns="http://www.w3.org/2000/svg" fill="currentColor" class="three-dot" viewBox="0 0 16 16">
+                        <path d="M3 9.5a1.5 1.5 0 1 1 0-3 1.5 1.5 0 0 1 0 3m5 0a1.5 1.5 0 1 1 0-3 1.5 1.5 0 0 1 0 3m5 0a1.5 1.5 0 1 1 0-3 1.5 1.5 0 0 1 0 3"/>
+                    </svg>
+                </div>
+                <div class="audio-text">Осталось прослушиваний: {{ CurrentFileLimit - CurrentFileListen }}</div>
             </div>
         </div>
-
         <div class="text" v-html="CurrentQuestion"></div>
     </div>
     <div class="opros"> <br>
@@ -29,14 +35,17 @@
 
 <script>
 import { mapActions, mapGetters } from 'vuex'
+import httpClient from '@/httpClient';
 export default {
     name: "questionVideo",
     data() {
         return {
-            VideoBtn: true
+            CurrentFileAccessToken: null,
+            CurrentFileLimit: null,
+            CurrentFileListen: null,
+            videoPlaying: false,
         }
     },
-
     props: {
         CurrentTitle: {
             type: String,
@@ -74,10 +83,16 @@ export default {
             type: String,
             require: true
         }
-
     },
     computed: {
-        ...mapGetters(['getCurrentPointer', 'selectedAnswers']),
+        ...mapGetters([
+            'getCurrentPointer',
+            'selectedAnswers',
+            'GetFileAccessToken',
+            'GetFileListen',
+            'GetFileLimit',
+            'getNextQuestion',
+        ]),
         answersList() {
             if (this.selectedAnswers) {
                 return this.selectedAnswers.map(item => item.answerId)
@@ -85,38 +100,45 @@ export default {
                 return []
             }
         }
-
     },
     methods: {
-        ...mapActions(['sendAnswer']),
+        ...mapActions(['sendAnswer', 'FileAccessToken']),
         isAnswer(id) { return this.answersList.includes(id) },
-        videoplay() {
-            if (this.VideoBtn && this.CurrentVideoLimit > 0) {
-                this.VideoBtn = !this.VideoBtn
-                this.$refs.videoPlayer.src = "uploads/" + this.CurrentVideoFile
-                this.$refs.videoPlayer.width = "100px"
+        async videoplay() {
+            this.videoPlaying = true;
+            await this.FileAccessToken(this.CurrentVideoFile);
+            this.CurrentFileAccessToken = await this.GetFileAccessToken();
+            var reader = new FileReader();
+            const responseFile = await httpClient.get('/api/files/DownloadFile/' + this.CurrentVideoFile + "/" + this.CurrentFileAccessToken, { responseType: 'blob', showLoader: false });
+            console.log(responseFile);
+            reader.readAsBinaryString(responseFile.data);
+            reader.onload = function () {
+                var arrayBuffer = reader.result;
+                var base64str = btoa(arrayBuffer);
+                this.$refs.videoPlayer.src = "data:video/mp4;base64," + base64str;
+                this.getCurrentFileStatus();
                 this.$refs.videoPlayer.play();
-
-            }
+                this.$refs.videoPlayer.onended = () => { 
+                    this.videoPlaying = false;
+                }
+            }.bind(this)
         },
-        updateVideoTime() {
-            if (this.$refs.videoPlayer.currentTime == this.$refs.videoPlayer.duration) {
-                this.VideoBtn = !this.VideoBtn
-            }
-
+        async getCurrentFileStatus() {
+            await this.FileAccessToken(this.CurrentVideoFile);
+            this.CurrentFileLimit = this.GetFileLimit();
+            this.CurrentFileListen = this.GetFileListen();
         }
-
     },
-    mounted() {
-        this.$refs.videoPlayer.src = "uploads/" + this.CurrentVideoFile
-    }, watch: {
-        getCurrentPointer: function () {
-            this.$refs.videoPlayer.src = "uploads/" + this.CurrentVideoFile
-            this.VideoBtn = !this.VideoBtn
+    async created() {
+        this.getCurrentFileStatus();
+    },
+    watch: {
+        'CurrentTitle' : async function() {
+            this.$refs.videoPlayer.src = null;
+            this.videoPlaying = false,
+            this.getCurrentFileStatus();
         }
-
     }
-
 }
 </script>
 
@@ -129,5 +151,13 @@ export default {
 .answer_select {
     color: yellow !important;
 
+}
+.three-dot {
+    color: white;
+    width: 30px;
+    height: 36px;
+}
+.panel {
+    height: 40px;
 }
 </style>
