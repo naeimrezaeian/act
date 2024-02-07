@@ -1,7 +1,10 @@
 <template>
     <div class="title">{{ CurrentTitle }}</div>
     <div class="audio-vopros">
-        <button type="button" class="btn" v-bind:class="{ btn_play: this.AudioBtn }" @click="getAudio()">
+        <button type="button" :disabled="(CurrentFileLimit - CurrentFileListen) <= 0 || audioPlaying"
+            class="btn" :class="[ ((CurrentFileLimit - CurrentFileListen) <= 0 || audioPlaying) ? 'btn-disabled' : 'btn-play']"
+            @click="getAudio()">
+
             <p>ПРОСЛУШАТЬ ВОПРОС</p>
 
         </button>
@@ -32,7 +35,8 @@ export default {
             audio: new Audio(),
             CurrentFileAccessToken: null,
             CurrentFileLimit: null,
-            CurrentFileListen: null
+            CurrentFileListen: null,
+            audioPlaying: false,
         }
     },
 
@@ -76,6 +80,11 @@ export default {
         }
 
     },
+    async created() {
+        await this.FileAccessToken(this.CurrentAudioFile);
+        this.CurrentFileLimit = this.GetFileLimit();
+        this.CurrentFileListen = this.GetFileListen();
+    },
     computed: {
         ...mapGetters(['getCurrentPointer', 'getNextQuestion', 'selectedAnswers', 'GetFileAccessToken', 'GetFileLimit', 'GetFileListen']),
         answersList() {
@@ -92,47 +101,43 @@ export default {
         ...mapActions(['sendAnswer', 'FileAccessToken']),
         isAnswer(id) { return this.answersList.includes(id) },
         async getAudio() {
-            console.log("Get Audio")
-            //
+            this.audioPlaying = true;
             await this.FileAccessToken(this.CurrentAudioFile)
-
             this.CurrentFileAccessToken = this.GetFileAccessToken()
-            this.CurrentFileLimit = this.GetFileLimit()
-            this.CurrentFileListen = this.GetFileListen()
-
             var reader = new FileReader();
             const responseFile = await httpClient.get('/api/files/DownloadFile/' + this.CurrentAudioFile + "/" + this.CurrentFileAccessToken, { responseType: 'blob', showLoader: false })
             reader.readAsBinaryString(responseFile.data);
 
-            reader.onload = function () {
-
+            reader.onload = async function () {
                 var arrayBuffer = reader.result;
                 var base64str = btoa(arrayBuffer);
-                this.audio.src = "data:audio/wav;base64," + base64str
+                this.audio.src = "data:audio/wav;base64," + base64str;
+                await this.FileAccessToken(this.CurrentAudioFile);
+                this.CurrentFileLimit = this.GetFileLimit();
+                this.CurrentFileListen = this.GetFileListen();
                 this.audio.play()
-            }.bind(this)
-
-
-        },
-        playAudio() {
-            console.log("play " + this.CurrentAudioFile)
-            this.AudioBtn = !this.AudioBtn
-            var audio = new Audio("uploads/" + this.CurrentAudioFile)
-            let that = this
-            audio.ontimeupdate = function () {
-                //console.log( audio.currentTime.toFixed()+" "+audio.duration)
-                if (audio.currentTime === audio.duration) {
-                    that.AudioBtn = !that.AudioBtn
-                    console.log("audio finish")
+                this.audio.onended = () => { 
+                    this.audioPlaying = false;
                 }
-            }
-            audio.play()
-
-
+            }.bind(this)
+        },
+    },
+    watch: {
+        'CurrentTitle': async function() {
+            this.audio.pause();
+            this.audioPlaying = false;
+            await this.FileAccessToken(this.CurrentAudioFile);
+            this.CurrentFileLimit = this.GetFileLimit();
+            this.CurrentFileListen = this.GetFileListen();
         }
     }
 }
 
 </script>
 
-<style  scoped></style>
+<style scoped>
+.btn-disabled {
+    background-color: grey !important;
+    cursor: default;
+}
+</style>
