@@ -65,7 +65,11 @@ export default {
                 await this.getCurrentState()
                 this.$router.push("/exam");
             }).catch(() => {
-                console.log('no')
+                this.Swal.fire({
+                    title: "Paзpeшeниe на камеру отклонено!",
+                    text: "Пожалуйста, измените разрешение камеры, чтобы разрешить",
+                    icon: "error"
+                })
             })
         }
     },
