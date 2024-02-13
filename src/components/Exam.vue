@@ -139,7 +139,7 @@ export default {
 
     },
     async send() {
-      this.$refs.camera.stopRecord()
+      this.$refs.camera?.stopRecord()
       await this.finishExam(this.currentSubtestId)
       this.setTime(0)
 
@@ -163,7 +163,7 @@ export default {
   mounted() {
     // this.Webcamera=this.$refs.camera.webcamera
     // console.log(this.isWebcamera)
-    this.$soketio.start();
+    this.$soketio.client._connectionState != 'Disconnected' ? null : this.$soketio.start();
     this.$store.subscribe(async (mutation) => {
       switch (mutation.type) {
 

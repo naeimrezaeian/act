@@ -36,9 +36,8 @@ export default {
 
             }
         },
-        mounted(){
-            
-            this.$soketio.start();
+        mounted(){            
+            this.$soketio.client._connectionState != 'Disconnected' ? null : this.$soketio.start();
         }
 }
 </script>
