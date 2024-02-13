@@ -139,7 +139,7 @@ export default {
 
     },
     async send() {
-      this.$refs.camera?.stopRecord()
+      this.$refs.camera.stopRecord()
       await this.finishExam(this.currentSubtestId)
       this.setTime(0)
 
