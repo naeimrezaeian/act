@@ -34,16 +34,25 @@ export default {
 
         this.connection.start().then(() => {
             console.log("connected")
-            this.connection.on("multipleConnections", () => {
-                console.log("Multiple logins deteced")
-                localStorage.removeItem("token")
-        localStorage.removeItem("exam")
-        router.push({name:'Login'})
-        location.reload()
-
+            this.connection.on("multipleConnections", async () => {
+                const result = await this.Swal.fire({
+                    title: "Время сеанса истекло!",
+                    text: "Другой IP-адрес выполнен с вашим именем пользователя!",
+                    icon: "warning"
+                })
+                if (result.isConfirmed) {
+                    localStorage.removeItem("token")
+                    localStorage.removeItem("exam")
+                    router.push({name:'Login'})
+                    location.reload()
+                }
             })
             this.connection.on("closeApp", () => {
-                console.log("close App")
+                this.Swal.fire({
+                    title: "Неа!",
+                    text: "Эта операция не разрешена!",
+                    icon: "error"
+                })
             })
             let self = this;
             async function handleDataAvailable(event) {
