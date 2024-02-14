@@ -45,8 +45,7 @@ import {mapGetters,mapActions} from 'vuex'
         }
         },
         mounted(){
-            
-            this.$soketio.start();
+            this.$soketio.client._connectionState != 'Disconnected' ? null : this.$soketio.start();
         }
         
         

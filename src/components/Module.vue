@@ -52,7 +52,7 @@ export default {
         }
     },
     mounted() {
-        this.$soketio.start();
+        this.$soketio.client._connectionState != 'Disconnected' ? null : this.$soketio.start();
     },
     computed: {
         ...mapGetters(['currentSubtestId']),
@@ -60,9 +60,17 @@ export default {
     methods: {
         ...mapActions(['setCurrentSubtest', 'sendCurrentState', 'startSubtest', 'getCurrentState']),
         async start() {
-            await this.startSubtest(this.currentSubtestId)
-            await this.getCurrentState()
-            this.$router.push("/exam");
+            navigator.mediaDevices.getUserMedia({audio: false, video: true}).then(async () => {
+                await this.startSubtest(this.currentSubtestId)
+                await this.getCurrentState()
+                this.$router.push("/exam");
+            }).catch(() => {
+                this.Swal.fire({
+                    title: "Paзpeшeниe на камеру отклонено!",
+                    text: "Пожалуйста, измените разрешение камеры, чтобы разрешить",
+                    icon: "error"
+                })
+            })
         }
     },
 }

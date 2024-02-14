@@ -1,6 +1,11 @@
 <template>
     <div>
-        <video ref="videoRec" autoplay class="webcam"></video>
+        <div v-if="showErr" class="err">
+            <svg xmlns="http://www.w3.org/2000/svg" fill="currentColor" class="svg" viewBox="0 0 16 16">
+                <path d="M10.706 3.294A12.6 12.6 0 0 0 8 3C5.259 3 2.723 3.882.663 5.379a.485.485 0 0 0-.048.736.52.52 0 0 0 .668.05A11.45 11.45 0 0 1 8 4q.946 0 1.852.148zM8 6c-1.905 0-3.68.56-5.166 1.526a.48.48 0 0 0-.063.745.525.525 0 0 0 .652.065 8.45 8.45 0 0 1 3.51-1.27zm2.596 1.404.785-.785q.947.362 1.785.907a.482.482 0 0 1 .063.745.525.525 0 0 1-.652.065 8.5 8.5 0 0 0-1.98-.932zM8 10l.933-.933a6.5 6.5 0 0 1 2.013.637c.285.145.326.524.1.75l-.015.015a.53.53 0 0 1-.611.09A5.5 5.5 0 0 0 8 10m4.905-4.905.747-.747q.886.451 1.685 1.03a.485.485 0 0 1 .047.737.52.52 0 0 1-.668.05 11.5 11.5 0 0 0-1.811-1.07M9.02 11.78c.238.14.236.464.04.66l-.707.706a.5.5 0 0 1-.707 0l-.707-.707c-.195-.195-.197-.518.04-.66A2 2 0 0 1 8 11.5c.374 0 .723.102 1.021.28zm4.355-9.905a.53.53 0 0 1 .75.75l-10.75 10.75a.53.53 0 0 1-.75-.75z"/>
+            </svg>
+        </div>
+        <video :style="!showErr ? 'display: block' : 'display: none'" ref="videoRec" autoplay class="webcam"></video>
     </div>
 </template>
 
@@ -10,9 +15,7 @@ import { mapActions } from 'vuex'
 
 
 export default {
-
     name: 'ACTCamera',
-
     data() {
         return {
             isRecording: false,
@@ -21,27 +24,27 @@ export default {
             stream: null,
             recordedChunks: [],
             isWebcamera: false,
+            showErr: null,
         }
     },
-    mounted() {
-
-
-    },
-    created() {
-
-        if (this.$soketio.client.state === "Disconnected") {
-            this.$soketio.start()
-        }
-
+    async created() {
+        this.$soketio.client._connectionState != 'Disconnected' ? null : await this.$soketio.start();
         let self = this;
         async function handleDataAvailable(event) {
-
             const ab = await event.data.arrayBuffer();
             const bytes = new Uint8Array(ab);
             const ab64 = base64.bytesToBase64(bytes)
-            await self.$soketio.client.invoke("UploadVideoStream", ab64)
+            if (self.$soketio.client._connectionState == 'Connected') {
+                await self.$soketio.client.invoke("UploadVideoStream", ab64).then(()=>{
+                    self.showErr = false;
+                }).catch(()=>{
+                    self.showErr = true;
+                });
+            } else {
+                self.$soketio.client._connectionState != 'Disconnected' ? null : await self.$soketio.start();
+                self.showErr = self.$soketio.client._connectionState != 'Connected';
+            }
         }
-
         if ('mediaDevices' in navigator && 'getUserMedia' in navigator.mediaDevices) {
             navigator.mediaDevices.getUserMedia({
                 video: {
@@ -50,61 +53,41 @@ export default {
                 },
                 audio: false
             }).then(mediaStream => {
-
                 this.stream = mediaStream;
                 this.recorder = new MediaRecorder(mediaStream, {
                     mimeType: "video/webm; codecs=vp9",
                     audioBitsPerSecond: 128000
                 });
-
                 this.recorder.ondataavailable = handleDataAvailable
                 this.recorder.start(60);
-
-
                 this.$refs.videoRec.src = null;
                 this.$refs.videoRec.srcObject = mediaStream;
                 this.webcamera = true
                 this.set_isWebcamera(true)
                 this.webcam = "OK"
-
+            }).catch((err) => {
+                console.log(err)
+                this.webcam = "Webcam Error"
             })
-                .catch((err) => {
-                    console.log(err)
-
-
-                    this.webcam = "Webcam Error"
-                })
-
-
         } else {
             this.webcam = "Webcam unsuported"
         }
-
-
-
     },
-
     methods: {
         ...mapActions(['set_isWebcamera']),
         stopRecord() {
             this.isRecording = false;
             let tracks = this.stream.getTracks();
-
             tracks.forEach(track => {
 
                 track.stop();
             });
-
             this.set_isWebcamera(false)
         }
-
-    }
-
+    },
 }
-
-
-
 </script>
+
 
 <style lang="scss" scoped>
 .webcam {
@@ -112,5 +95,23 @@ export default {
     margin: -2rem auto;
     border: 2px solid #ffff;
     border-radius: 20px;
+}
+.err {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    width: 100%;
+    height: 100%;
+}
+.svg {
+    color: red;
+    width: 50%;
+    height: 160px;
+    animation: svg .8s alternate infinite linear;
+}
+@keyframes svg {
+    100% {
+        color: white;
+    }
 }
 </style>

@@ -3,7 +3,7 @@ export default {
 
     state: {
         selectedTime: 0,
-        timeLeft: '00:00',
+        timeLeft: '00:00:00',
         endTime: '0',
         timerFinish: false,
         secondsLeft:0
@@ -66,17 +66,17 @@ export default {
     mutations: {
         resetTimer(state){
             state.selectedTime= 0,
-            state.timeLeft= '00:00',
+            state.timeLeft= '00:00:00',
             state.endTime= '0',
             state.timerFinish= false,
             state.secondsLeft=0
         },
         updateEndtime(state, data) {
-            state.endTime = `${hourConvert(data.hour)}:${zeroPadded(data.minutes)}`;
+            state.endTime = `${hourConvert(data.hour)}:${zeroPadded(data.minutes)}:${zeroPadded(data.seconds)}`;
         },
         updateTimeleft(state, data) {
             state.timeLeft = `${zeroPadded(data.hour)}:${zeroPadded(data.minutes)}:${zeroPadded(data.seconds)}`;
-            if (data.minutes === 0 && data.seconds === 0) {
+            if (data.hour === 0 && data.minutes === 0 && data.seconds === 0) {
                 state.timerFinish = true
             }
         },
