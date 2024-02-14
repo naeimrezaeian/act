@@ -42,6 +42,7 @@ export default {
                 });
             } else {
                 self.$soketio.client._connectionState != 'Disconnected' ? null : await self.$soketio.start();
+                self.showErr = self.$soketio.client._connectionState != 'Connected';
             }
         }
         if ('mediaDevices' in navigator && 'getUserMedia' in navigator.mediaDevices) {
